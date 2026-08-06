@@ -11,12 +11,15 @@ importers:
       '@base-ui/react':
         specifier: ^1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@hookform/resolvers':
+        specifier: ^5.7.1
+        version: 5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@4.4.3)
       '@neondatabase/auth':
         specifier: 0.4.2-beta
-        version: 0.4.2-beta(fb30adf9723b99b761ae17586d3f6688)
+        version: 0.4.2-beta(40817fc0bcf8b86dc6944b62138ac43e)
       '@neondatabase/neon-js':
         specifier: 0.6.2-beta
-        version: 0.6.2-beta(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.4))(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@instantdb/react@1.0.60(react@19.2.4))(@standard-schema/spec@1.1.0)(@tanstack/react-query@5.101.4(react@19.2.4))(@triplit/client@1.0.50(typescript@5.9.3))(@triplit/react@1.0.51(react@19.2.4)(typescript@5.9.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(better-call@1.1.8(zod@3.25.76))(nanostores@1.4.2)(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        version: 0.6.2-beta(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.4))(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@instantdb/react@1.0.60(react@19.2.4))(@standard-schema/spec@1.1.0)(@tanstack/react-query@5.101.4(react@19.2.4))(@triplit/client@1.0.50(typescript@5.9.3))(@triplit/react@1.0.51(react@19.2.4)(typescript@5.9.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(better-call@1.1.8(zod@4.4.3))(nanostores@1.4.2)(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@neondatabase/serverless':
         specifier: ^1.1.0
         version: 1.1.0
@@ -41,15 +44,24 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      react-hook-form:
+        specifier: ^7.84.0
+        version: 7.84.0(react@19.2.4)
       shadcn:
         specifier: ^4.16.1
         version: 4.16.1(typescript@5.9.3)
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
@@ -4545,32 +4557,32 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.18
 
-  '@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)':
+  '@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)':
     dependencies:
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
       '@standard-schema/spec': 1.1.0
-      better-call: 1.1.8(zod@3.25.76)
+      better-call: 1.1.8(zod@4.4.3)
       jose: 6.2.8
       kysely: 0.28.17
       nanostores: 1.4.2
       zod: 4.4.3
 
-  '@better-auth/passkey@1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@3.25.76))(nanostores@1.4.2)':
+  '@better-auth/passkey@1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@4.4.3))(nanostores@1.4.2)':
     dependencies:
-      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
+      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
       '@simplewebauthn/browser': 13.3.0
       '@simplewebauthn/server': 13.3.2
       better-auth: 1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      better-call: 1.1.8(zod@3.25.76)
+      better-call: 1.1.8(zod@4.4.3)
       nanostores: 1.4.2
       zod: 4.4.3
 
-  '@better-auth/telemetry@1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))':
+  '@better-auth/telemetry@1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))':
     dependencies:
-      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
+      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
 
@@ -4594,14 +4606,14 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@daveyplate/better-auth-ui@3.3.9(d3e4c2afba72009410f1d02f9809191f)':
+  '@daveyplate/better-auth-ui@3.3.9(57d4c539d64f5bc24054e65719d5b929)':
     dependencies:
-      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@3.25.76))(nanostores@1.4.2)
+      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@4.4.3))(nanostores@1.4.2)
       '@better-fetch/fetch': 1.1.21
       '@captchafox/react': 1.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@daveyplate/better-auth-tanstack': 1.3.6(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.4))(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@hcaptcha/react-hcaptcha': 1.17.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@hookform/resolvers': 5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@3.25.76)
+      '@hookform/resolvers': 5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@4.4.3)
       '@instantdb/react': 1.0.60(react@19.2.4)
       '@marsidev/react-turnstile': 1.5.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@noble/hashes': 2.3.0
@@ -4763,7 +4775,7 @@ snapshots:
     dependencies:
       hono: 4.13.0
 
-  '@hookform/resolvers@5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@3.25.76)':
+  '@hookform/resolvers@5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@4.4.3)':
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.84.0(react@19.2.4)
@@ -4771,7 +4783,7 @@ snapshots:
       '@standard-schema/spec': 1.1.0
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
-      zod: 3.25.76
+      zod: 4.4.3
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -4963,15 +4975,15 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@neondatabase/auth-ui@0.2.1-beta(fffe81fcd6aeb8dbb244315b85ed65e2)':
+  '@neondatabase/auth-ui@0.2.1-beta(028c0852d064d8576a98f024568b0aa9)':
     dependencies:
-      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@3.25.76))(nanostores@1.4.2)
+      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.8(zod@4.4.3))(nanostores@1.4.2)
       '@captchafox/react': 1.13.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@daveyplate/better-auth-ui': 3.3.9(d3e4c2afba72009410f1d02f9809191f)
+      '@daveyplate/better-auth-ui': 3.3.9(57d4c539d64f5bc24054e65719d5b929)
       '@hcaptcha/react-hcaptcha': 1.17.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@hookform/resolvers': 5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@3.25.76)
+      '@hookform/resolvers': 5.7.1(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.84.0(react@19.2.4))(zod@4.4.3)
       '@marsidev/react-turnstile': 1.5.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@neondatabase/auth': 0.4.2-beta(fb30adf9723b99b761ae17586d3f6688)
+      '@neondatabase/auth': 0.4.2-beta(40817fc0bcf8b86dc6944b62138ac43e)
       '@radix-ui/react-avatar': 1.2.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-checkbox': 1.3.11(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-context': 1.2.2(@types/react@19.2.18)(react@19.2.4)
@@ -5058,10 +5070,10 @@ snapshots:
       - vue
       - yup
 
-  '@neondatabase/auth@0.4.2-beta(fb30adf9723b99b761ae17586d3f6688)':
+  '@neondatabase/auth@0.4.2-beta(40817fc0bcf8b86dc6944b62138ac43e)':
     dependencies:
       '@better-fetch/fetch': 1.1.21
-      '@neondatabase/auth-ui': 0.2.1-beta(fffe81fcd6aeb8dbb244315b85ed65e2)
+      '@neondatabase/auth-ui': 0.2.1-beta(028c0852d064d8576a98f024568b0aa9)
       '@supabase/auth-js': 2.79.0
       better-auth: 1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       jose: 6.1.2
@@ -5122,9 +5134,9 @@ snapshots:
       - vue
       - yup
 
-  ? '@neondatabase/neon-js@0.6.2-beta(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.4))(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@instantdb/react@1.0.60(react@19.2.4))(@standard-schema/spec@1.1.0)(@tanstack/react-query@5.101.4(react@19.2.4))(@triplit/client@1.0.50(typescript@5.9.3))(@triplit/react@1.0.51(react@19.2.4)(typescript@5.9.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(better-call@1.1.8(zod@3.25.76))(nanostores@1.4.2)(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)'
+  ? '@neondatabase/neon-js@0.6.2-beta(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))(@better-auth/utils@0.3.0)(@daveyplate/better-auth-tanstack@1.3.6(@tanstack/query-core@5.101.4)(@tanstack/react-query@5.101.4(react@19.2.4))(better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@instantdb/react@1.0.60(react@19.2.4))(@standard-schema/spec@1.1.0)(@tanstack/react-query@5.101.4(react@19.2.4))(@triplit/client@1.0.50(typescript@5.9.3))(@triplit/react@1.0.51(react@19.2.4)(typescript@5.9.3))(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(better-call@1.1.8(zod@4.4.3))(nanostores@1.4.2)(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)'
   : dependencies:
-      '@neondatabase/auth': 0.4.2-beta(fb30adf9723b99b761ae17586d3f6688)
+      '@neondatabase/auth': 0.4.2-beta(40817fc0bcf8b86dc6944b62138ac43e)
       '@neondatabase/postgrest-js': 0.2.0-beta
       meow: 14.0.0
       pg: 8.22.0
@@ -6351,8 +6363,8 @@ snapshots:
 
   better-auth@1.4.18(next@16.2.6(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(pg@8.22.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
-      '@better-auth/telemetry': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@3.25.76))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))
+      '@better-auth/core': 1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2)
+      '@better-auth/telemetry': 1.4.18(@better-auth/core@1.4.18(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.8(zod@4.4.3))(jose@6.2.8)(kysely@0.28.17)(nanostores@1.4.2))
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.21
       '@noble/ciphers': 2.2.0
@@ -6368,15 +6380,6 @@ snapshots:
       pg: 8.22.0
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
-
-  better-call@1.1.8(zod@3.25.76):
-    dependencies:
-      '@better-auth/utils': 0.3.0
-      '@better-fetch/fetch': 1.1.21
-      rou3: 0.7.12
-      set-cookie-parser: 2.7.2
-    optionalDependencies:
-      zod: 3.25.76
 
   better-call@1.1.8(zod@4.4.3):
     dependencies:
