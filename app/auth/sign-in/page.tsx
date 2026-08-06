@@ -2,6 +2,8 @@
 
 import { useActionState } from "react"
 import { signInWithEmail } from "./actions"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 export default function SignInForm() {
   const [state, formAction, isPending] = useActionState(signInWithEmail, null)
@@ -9,10 +11,10 @@ export default function SignInForm() {
   return (
     <form
       action={formAction}
-      className="flex min-h-screen flex-col items-center justify-center gap-5 bg-gray-900"
+      className="flex min-h-screen flex-col items-center justify-center gap-5"
     >
       <div className="w-sm">
-        <h1 className="mt-10 text-center text-2xl/9 font-bold text-white">
+        <h1 className="mt-10 text-center text-2xl/9 font-bold">
           Sign in to your account
         </h1>
       </div>
@@ -24,13 +26,12 @@ export default function SignInForm() {
         >
           Email address
         </label>
-        <input
+        <Input
           id="email"
           name="email"
           type="email"
           required
           placeholder="john@my-company.com"
-          className="block w-full rounded-md bg-white/5 px-2 py-1.5 text-white outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-indigo-500"
         />
       </div>
 
@@ -41,13 +42,12 @@ export default function SignInForm() {
         >
           Password
         </label>
-        <input
+        <Input
           id="password"
           name="password"
           type="password"
           required
           placeholder="*****"
-          className="block w-full rounded-md bg-white/5 px-2 py-1.5 text-white outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-indigo-500"
         />
       </div>
 
@@ -57,13 +57,9 @@ export default function SignInForm() {
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="flex w-sm justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400"
-      >
+      <Button type="submit" disabled={isPending}>
         Sign in
-      </button>
+      </Button>
     </form>
   )
 }

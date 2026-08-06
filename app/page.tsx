@@ -9,7 +9,7 @@ export default async function Home() {
 
   if (session?.user) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-gray-900">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-2">
         <h1 className="mb-4 text-4xl">
           Logged in as{" "}
           <span className="font-bold underline">{session.user.name}</span>
@@ -19,7 +19,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-gray-900">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2">
       <h1 className="mb-4 text-4xl font-bold">Not logged in</h1>
       <div className="item-center flex gap-2">
         <Link
