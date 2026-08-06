@@ -1,18 +1,39 @@
-import { Button } from "@/components/ui/button"
+import { auth } from "@/lib/auth/server"
+import Link from "next/link"
 
-export default function Page() {
+// Server components using auth methods must be rendered dynamically
+export const dynamic = "force-dynamic"
+
+export default async function Home() {
+  const { data: session } = await auth.getSession()
+
+  if (session?.user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-gray-900">
+        <h1 className="mb-4 text-4xl">
+          Logged in as{" "}
+          <span className="font-bold underline">{session.user.name}</span>
+        </h1>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-gray-900">
+      <h1 className="mb-4 text-4xl font-bold">Not logged in</h1>
+      <div className="item-center flex gap-2">
+        <Link
+          href="/auth/sign-up"
+          className="inline-flex text-lg text-indigo-400 hover:underline"
+        >
+          Sign-up
+        </Link>
+        <Link
+          href="/auth/sign-in"
+          className="inline-flex text-lg text-indigo-400 hover:underline"
+        >
+          Sign-in
+        </Link>
       </div>
     </div>
   )
