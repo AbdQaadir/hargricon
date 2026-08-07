@@ -1,40 +1,13 @@
-import { auth } from "@/lib/auth/server"
-import Link from "next/link"
+import { SiteHeader } from "@/components/landing/site-header"
+import { Hero } from "@/components/landing/hero"
 
-// Server components using auth methods must be rendered dynamically
-export const dynamic = "force-dynamic"
-
-export default async function Home() {
-  const { data: session } = await auth.getSession()
-
-  if (session?.user) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-2">
-        <h1 className="mb-4 text-4xl">
-          Logged in as{" "}
-          <span className="font-bold underline">{session.user.name}</span>
-        </h1>
-      </div>
-    )
-  }
-
+export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2">
-      <h1 className="mb-4 text-4xl font-bold">Not logged in</h1>
-      <div className="item-center flex gap-2">
-        <Link
-          href="/auth/sign-up"
-          className="inline-flex text-lg text-indigo-400 hover:underline"
-        >
-          Sign-up
-        </Link>
-        <Link
-          href="/auth/sign-in"
-          className="inline-flex text-lg text-indigo-400 hover:underline"
-        >
-          Sign-in
-        </Link>
-      </div>
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader />
+      <main className="flex-1">
+        <Hero />
+      </main>
     </div>
   )
 }
