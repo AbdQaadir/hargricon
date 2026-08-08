@@ -1,65 +1,137 @@
 "use client"
 
-import { useActionState } from "react"
+import { useState } from "react"
+import Link from "next/link"
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { EnvelopeIcon } from "@phosphor-icons/react"
+
 import { signInWithEmail } from "./actions"
-import { Input } from "@/components/ui/input"
+import { signInSchema, type SignInValues } from "@/lib/validations/auth"
+import { AuthShell } from "../auth-shell"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card"
 
 export default function SignInForm() {
-  const [state, formAction, isPending] = useActionState(signInWithEmail, null)
+  const [formError, setFormError] = useState<string | null>(null)
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInValues>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: "", password: "" },
+  })
+
+  async function onSubmit(values: SignInValues) {
+    setFormError(null)
+    const result = await signInWithEmail(values)
+    if (result?.error) {
+      setFormError(result.error)
+    }
+  }
 
   return (
-    <form
-      action={formAction}
-      className="flex min-h-screen flex-col items-center justify-center gap-5"
-    >
-      <div className="w-sm">
-        <h1 className="mt-10 text-center text-2xl/9 font-bold">
-          Sign in to your account
-        </h1>
-      </div>
+    <AuthShell>
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-xl">Sign in to your account</CardTitle>
+          <CardDescription>
+            Welcome back. Pick up where you left off.
+          </CardDescription>
+        </CardHeader>
 
-      <div className="flex w-sm flex-col gap-1.5">
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-100"
-        >
-          Email address
-        </label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          required
-          placeholder="john@my-company.com"
-        />
-      </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent>
+            <div className="flex flex-col gap-5">
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="email">Email address</Label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <EnvelopeIcon />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="email"
+                        type="email"
+                        placeholder="john@my-company.com"
+                        {...field}
+                      />
+                    </InputGroup>
+                    {errors.email && (
+                      <p className="text-sm text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
 
-      <div className="flex w-sm flex-col gap-1.5">
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-gray-100"
-        >
-          Password
-        </label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          placeholder="*****"
-        />
-      </div>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="password">Password</Label>
+                      <Link
+                        href="/auth/forgot-password"
+                        className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <PasswordInput id="password" {...field} />
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
 
-      {state?.error && (
-        <div className="rounded-md px-3 py-2 text-sm text-red-500">
-          {state.error}
-        </div>
-      )}
+              {formError && (
+                <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {formError}
+                </div>
+              )}
+            </div>
+          </CardContent>
 
-      <Button type="submit" disabled={isPending}>
-        Sign in
-      </Button>
-    </form>
+          <CardFooter className="flex-col gap-3">
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Signing in..." : "Sign in"}
+            </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/sign-up"
+                className="text-foreground underline underline-offset-4"
+              >
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+    </AuthShell>
   )
 }

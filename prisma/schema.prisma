@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  FARMER
+  BUYER
+}
+
+enum District {
+  GASABO
+  KICUKIRO
+  NYARUGENGE
+  BURERA
+  GAKENKE
+  GICUMBI
+  MUSANZE
+  RULINDO
+  GISAGARA
+  HUYE
+  KAMONYI
+  MUHANGA
+  NYAMAGABE
+  NYANZA
+  NYARUGURU
+  RUHANGO
+  BUGESERA
+  GATSIBO
+  KAYONZA
+  KIREHE
+  NGOMA
+  NYAGATARE
+  RWAMAGANA
+  KARONGI
+  NGORORERO
+  NYABIHU
+  NYAMASHEKE
+  RUBAVU
+  RUSIZI
+  RUTSIRO
+}
+
+model Profile {
+  id         String   @id @default(cuid())
+  authUserId String   @unique
+  email      String   @unique
+  firstName  String
+  lastName   String?
+  roles      Role[]   @default([FARMER])
+  district   District
+  phone      String
+  whatsapp   String?
+  bio        String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([district])
+}

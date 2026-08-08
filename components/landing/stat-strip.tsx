@@ -22,7 +22,7 @@ const stats: {
   {
     value: "20–30%",
     description:
-      "of fruits, vegetables, and potatoes harvested in Rwanda are lost before reaching a buyer — the exact produce hargricon helps farmers sell.",
+      "of fruits, vegetables, and potatoes harvested in Rwanda are lost before reaching a buyer. That's the exact produce hargricon helps farmers sell.",
     sourceLabel: "Africa Press, 2025",
     sourceUrl:
       "https://www.africa-press.net/rwanda/all-news/cutting-post-harvest-losses-key-to-rwandas-food-security",
@@ -33,7 +33,7 @@ const stats: {
   {
     value: "40%",
     description:
-      "of Rwanda's food is lost annually due to weak post-harvest management — poor storage, transport, and limited market access.",
+      "of Rwanda's food is lost annually due to weak post-harvest management: poor storage, transport, and limited market access.",
     sourceLabel: "Africa Press, 2025",
     sourceUrl:
       "https://www.africa-press.net/rwanda/all-news/cutting-post-harvest-losses-key-to-rwandas-food-security",
@@ -44,7 +44,7 @@ const stats: {
   {
     value: "15%",
     description:
-      "is Rwanda's current post-harvest loss rate for maize — even with new drying grounds and solar dryers rolling out nationwide.",
+      "is Rwanda's current post-harvest loss rate for maize, even with new drying grounds and solar dryers rolling out nationwide.",
     sourceLabel: "Ministry of Agriculture and Animal Resources, Rwanda",
     sourceUrl:
       "https://www.minagri.gov.rw/updates/news-details/maize-smallholder-farmers-reaping-big-from-enhanced-post-harvest-handling",

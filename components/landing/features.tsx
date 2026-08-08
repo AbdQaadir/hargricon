@@ -17,7 +17,7 @@ const farmerFeatures: { icon: Icon; title: string; description: string }[] = [
     icon: ChartLineUpIcon,
     title: "AI-suggested fair pricing",
     description:
-      "Get a price range based on crop type, condition, and local demand — no guesswork, no underselling.",
+      "Get a price range based on crop type, condition, and local demand, no guesswork, no underselling.",
   },
   {
     icon: MapPinIcon,
@@ -44,7 +44,7 @@ const buyerFeatures: { icon: Icon; title: string; description: string }[] = [
     icon: TagIcon,
     title: "Transparent pricing",
     description:
-      "See the same AI-suggested price the farmer does — no haggling from a cold start.",
+      "See the same AI-suggested price the farmer does, no haggling from a cold start.",
   },
   {
     icon: HandshakeIcon,
@@ -97,7 +97,7 @@ function Features() {
           Built for both sides of the market
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-center text-muted-foreground sm:text-lg">
-          Hargricon gives farmers a fair, fast way to sell their produce — and
+          Hargricon gives farmers a fair, fast way to sell their produce, and
           gives buyers a direct line to fresh produce nearby.
         </p>
 

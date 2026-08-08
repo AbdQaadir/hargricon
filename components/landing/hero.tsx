@@ -68,9 +68,9 @@ function Hero() {
 
         <p className="mx-auto mt-6 max-w-2xl text-balance text-white/80 sm:text-lg">
           Across Sub-Saharan Africa, nearly half of all fruits and vegetables
-          grown never reach a plate — lost to spoilage, poor market access, and
+          grown never reach a plate, lost to spoilage, poor market access, and
           mistimed pricing. Hargricon helps farmers report, price, and find
-          buyers for their produce — before it&apos;s wasted.
+          buyers for their produce before it&apos;s wasted.
         </p>
 
         <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
