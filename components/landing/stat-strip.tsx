@@ -22,12 +22,12 @@ const stats: {
   {
     value: "20–30%",
     description:
-      "of fruits, vegetables, and potatoes harvested in Rwanda are lost before reaching a buyer — the exact surplus hargricon helps farmers sell.",
+      "of fruits, vegetables, and potatoes harvested in Rwanda are lost before reaching a buyer — the exact produce hargricon helps farmers sell.",
     sourceLabel: "Africa Press, 2025",
     sourceUrl:
       "https://www.africa-press.net/rwanda/all-news/cutting-post-harvest-losses-key-to-rwandas-food-security",
     imageSrc: "/images/wasted-fruits-and-veg.jpg",
-    imagePlaceholder: "Photo: smallholder farmer with surplus harvest",
+    imagePlaceholder: "Photo: smallholder farmer with fresh harvest",
     imageIcon: BasketIcon,
   },
   {

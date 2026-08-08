@@ -1,0 +1,7 @@
+export { SiteHeader } from "@/components/landing/site-header"
+export { Hero } from "@/components/landing/hero"
+export { HowItWorks } from "@/components/landing/how-it-works"
+export { Features } from "@/components/landing/features"
+export { StatStrip } from "@/components/landing/stat-strip"
+export { ClosingCta } from "@/components/landing/closing-cta"
+export { SiteFooter } from "@/components/landing/site-footer"

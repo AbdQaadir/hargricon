@@ -18,6 +18,12 @@ function SiteHeader() {
           >
             How it works
           </a>
+          <a
+            href="#features"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Features
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">

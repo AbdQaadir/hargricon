@@ -1,8 +1,12 @@
-import { SiteHeader } from "@/components/landing/site-header"
-import { Hero } from "@/components/landing/hero"
-import { HowItWorks } from "@/components/landing/how-it-works"
-import { SiteFooter } from "@/components/landing/site-footer"
-import { StatStrip } from "@/components/landing/stat-strip"
+import {
+  ClosingCta,
+  Features,
+  Hero,
+  HowItWorks,
+  SiteFooter,
+  SiteHeader,
+  StatStrip,
+} from "@/components/landing"
 
 export default function Home() {
   return (
@@ -11,7 +15,9 @@ export default function Home() {
       <main className="flex-1">
         <Hero />
         <HowItWorks />
+        <Features />
         <StatStrip />
+        <ClosingCta />
       </main>
       <SiteFooter />
     </div>

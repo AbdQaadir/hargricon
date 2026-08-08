@@ -13,7 +13,7 @@ const steps: { icon: Icon; title: string; description: string }[] = [
   {
     icon: ChatCircleTextIcon,
     title: "Describe what you have",
-    description: "Tell us about your surplus produce in plain language.",
+    description: "Tell us about your produce in plain language.",
   },
   {
     icon: TagIcon,
