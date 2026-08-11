@@ -33,14 +33,32 @@ export const forgotPasswordSchema = z.object({
 
 export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
 
+const passwordMatchShape = {
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Confirm your new password"),
+}
+
 export const resetPasswordSchema = z
-  .object({
-    newPassword: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Confirm your new password"),
-  })
+  .object(passwordMatchShape)
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   })
 
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
+
+// Server-side variant: includes the reset token from the email link,
+// which isn't a form field, so it's not part of resetPasswordSchema.
+export const resetPasswordRequestSchema = z
+  .object({
+    ...passwordMatchShape,
+    token: z.string().min(1, "Missing reset token."),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
+
+export type ResetPasswordRequestValues = z.infer<
+  typeof resetPasswordRequestSchema
+>

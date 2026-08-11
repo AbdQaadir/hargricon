@@ -5,7 +5,8 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Profile } from "@prisma/client"
 
-import { updateProfile } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
 import { profileSchema, type ProfileValues } from "@/lib/validations/profile"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -33,11 +34,12 @@ function ProfileForm({ profile }: { profile: Profile }) {
   async function onSubmit(values: ProfileValues) {
     setFormError(null)
     setSuccess(false)
-    const result = await updateProfile(values)
-    if (result?.error) {
-      setFormError(result.error)
-    } else {
+
+    try {
+      await apiClient.patch(API_ROUTES.profile, values)
       setSuccess(true)
+    } catch (error) {
+      setFormError(getApiErrorMessage(error))
     }
   }
 

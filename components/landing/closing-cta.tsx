@@ -2,9 +2,15 @@
 
 import { ArrowRightIcon, BinocularsIcon } from "@phosphor-icons/react"
 
+import { authClient } from "@/lib/auth/client"
+import { ROUTES } from "@/lib/routes"
 import { buttonVariants } from "@/components/ui/button"
+import Link from "next/link"
 
 function ClosingCta() {
+  const session = authClient.useSession()
+  const isSignedIn = Boolean(session.data?.user)
+
   return (
     <section className="border-t border-border">
       <div className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
@@ -17,10 +23,13 @@ function ClosingCta() {
         </p>
 
         <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
-          <a href="/auth/sign-up" className={buttonVariants({ size: "xl" })}>
-            Register your farm
+          <Link
+            href={isSignedIn ? ROUTES.account : ROUTES.signUp}
+            className={buttonVariants({ size: "xl" })}
+          >
+            {isSignedIn ? "Go to your dashboard" : "Register your farm"}
             <ArrowRightIcon data-icon="inline-end" />
-          </a>
+          </Link>
 
           <a
             href="/produce"

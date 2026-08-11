@@ -2,11 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import { resetPasswordWithToken } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
+import { ROUTES } from "@/lib/routes"
 import {
   resetPasswordSchema,
   type ResetPasswordValues,
@@ -25,6 +27,7 @@ import {
 } from "@/components/ui/card"
 
 export default function ResetPasswordForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
   const [formError, setFormError] = useState<string | null>(null)
@@ -39,9 +42,16 @@ export default function ResetPasswordForm() {
 
   async function onSubmit(values: ResetPasswordValues) {
     setFormError(null)
-    const result = await resetPasswordWithToken(token ?? "", values)
-    if (result?.error) {
-      setFormError(result.error)
+    try {
+      await apiClient.post(API_ROUTES.resetPassword, {
+        ...values,
+        token: token ?? "",
+      })
+      router.push(ROUTES.signIn)
+    } catch (error) {
+      setFormError(
+        getApiErrorMessage(error, "This reset link is invalid or has expired.")
+      )
     }
   }
 

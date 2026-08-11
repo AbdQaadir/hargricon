@@ -2,11 +2,14 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EnvelopeIcon, MapPinIcon, PhoneIcon } from "@phosphor-icons/react"
 
-import { signUpWithEmail } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
+import { ROUTES } from "@/lib/routes"
 import { signUpSchema, type SignUpValues } from "@/lib/validations/auth"
 import { AuthShell } from "../auth-shell"
 import { Input } from "@/components/ui/input"
@@ -46,6 +49,7 @@ function Optional() {
 }
 
 export default function SignUpForm() {
+  const router = useRouter()
   const [formError, setFormError] = useState<string | null>(null)
   const {
     control,
@@ -64,9 +68,12 @@ export default function SignUpForm() {
 
   async function onSubmit(values: SignUpValues) {
     setFormError(null)
-    const result = await signUpWithEmail(values)
-    if (result?.error) {
-      setFormError(result.error)
+    try {
+      await apiClient.post(API_ROUTES.signUp, values)
+      router.push(ROUTES.home)
+      router.refresh()
+    } catch (error) {
+      setFormError(getApiErrorMessage(error, "Failed to create account"))
     }
   }
 

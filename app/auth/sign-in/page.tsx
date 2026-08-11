@@ -2,11 +2,14 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EnvelopeIcon } from "@phosphor-icons/react"
 
-import { signInWithEmail } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
+import { ROUTES } from "@/lib/routes"
 import { signInSchema, type SignInValues } from "@/lib/validations/auth"
 import { AuthShell } from "../auth-shell"
 import { PasswordInput } from "@/components/ui/password-input"
@@ -27,6 +30,7 @@ import {
 } from "@/components/ui/card"
 
 export default function SignInForm() {
+  const router = useRouter()
   const [formError, setFormError] = useState<string | null>(null)
   const {
     control,
@@ -39,9 +43,12 @@ export default function SignInForm() {
 
   async function onSubmit(values: SignInValues) {
     setFormError(null)
-    const result = await signInWithEmail(values)
-    if (result?.error) {
-      setFormError(result.error)
+    try {
+      await apiClient.post(API_ROUTES.signIn, values)
+      router.push(ROUTES.home)
+      router.refresh()
+    } catch (error) {
+      setFormError(getApiErrorMessage(error, "Failed to sign in. Try again"))
     }
   }
 
