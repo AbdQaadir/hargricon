@@ -44,6 +44,22 @@ enum District {
   RUTSIRO
 }
 
+enum ListingStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+  EXPIRED
+  CANCELLED
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
 model Profile {
   id         String   @id @default(cuid())
   authUserId String   @unique
@@ -55,8 +71,92 @@ model Profile {
   phone      String
   whatsapp   String?
   bio        String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now()) @db.Timestamptz
+  updatedAt  DateTime @updatedAt @db.Timestamptz
+
+  listings   Listing[]
+  orders     Order[]   @relation("BuyerOrders")
 
   @@index([district])
+}
+
+model Crop {
+  id                   String                @id @default(cuid())
+  name                 String                @unique
+  category             String
+  createdAt            DateTime              @default(now()) @db.Timestamptz
+  updatedAt            DateTime              @updatedAt @db.Timestamptz
+
+  listings             Listing[]
+  marketPrices         MarketPrice[]
+  priceRecommendations PriceRecommendation[]
+}
+
+model Listing {
+  id               String        @id @default(cuid())
+  farmerId         String
+  farmer           Profile       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  cropId           String
+  crop             Crop          @relation(fields: [cropId], references: [id])
+  quantity         Float
+  unit             String
+  askingPrice      Float
+  recommendedPrice Float?
+  harvestDate      DateTime      @db.Date
+  district         District
+  status           ListingStatus @default(AVAILABLE)
+  createdAt        DateTime      @default(now()) @db.Timestamptz
+  updatedAt        DateTime      @updatedAt @db.Timestamptz
+
+  orders               Order[]
+  priceRecommendations PriceRecommendation[]
+
+  @@index([farmerId])
+  @@index([cropId])
+  @@index([district, status])
+}
+
+model MarketPrice {
+  id           String   @id @default(cuid())
+  cropId       String
+  crop         Crop     @relation(fields: [cropId], references: [id])
+  district     District
+  price        Float
+  unit         String
+  source       String
+  recordedDate DateTime @db.Date
+  createdAt    DateTime @default(now()) @db.Timestamptz
+
+  @@unique([cropId, district, source, recordedDate])
+  @@index([cropId, district, recordedDate])
+}
+
+model PriceRecommendation {
+  id               String   @id @default(cuid())
+  cropId           String
+  crop             Crop     @relation(fields: [cropId], references: [id])
+  listingId        String?
+  listing          Listing? @relation(fields: [listingId], references: [id])
+  district         District
+  recommendedPrice Float
+  modelVersion     String
+  generatedAt      DateTime @default(now()) @db.Timestamptz
+
+  @@index([cropId, district])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  listingId   String
+  listing     Listing     @relation(fields: [listingId], references: [id])
+  buyerId     String
+  buyer       Profile     @relation("BuyerOrders", fields: [buyerId], references: [id])
+  quantity    Float
+  agreedPrice Float
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now()) @db.Timestamptz
+  updatedAt   DateTime    @updatedAt @db.Timestamptz
+
+  @@index([listingId])
+  @@index([buyerId])
 }
