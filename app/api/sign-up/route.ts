@@ -1,23 +1,25 @@
-"use server"
-
-import { redirect } from "next/navigation"
+import { NextResponse } from "next/server"
 
 import { auth } from "@/lib/auth/server"
 import { prisma } from "@/lib/db/client"
-import { signUpSchema, type SignUpValues } from "@/lib/validations/auth"
+import { signUpSchema } from "@/lib/validations/auth"
 
-export async function signUpWithEmail(values: SignUpValues) {
-  const parsed = signUpSchema.safeParse(values)
+export async function POST(request: Request) {
+  const body = await request.json()
+  const parsed = signUpSchema.safeParse(body)
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Invalid input." }
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid input." },
+      { status: 400 }
+    )
   }
 
   const { email, firstName, lastName, phone, district, password } = parsed.data
 
   // Optionally restrict sign ups based on email address
   // if (!email.endsWith("@my-company.com")) {
-  //  return { error: 'Email must be from my-company.com' };
+  //  return NextResponse.json({ error: "Email must be from my-company.com" }, { status: 400 });
   // }
 
   const { error } = await auth.signUp.email({
@@ -27,7 +29,10 @@ export async function signUpWithEmail(values: SignUpValues) {
   })
 
   if (error) {
-    return { error: error.message || "Failed to create account" }
+    return NextResponse.json(
+      { error: error.message || "Failed to create account" },
+      { status: 400 }
+    )
   }
 
   const session = await auth.getSession()
@@ -46,5 +51,5 @@ export async function signUpWithEmail(values: SignUpValues) {
     })
   }
 
-  redirect("/")
+  return NextResponse.json({ success: true })
 }

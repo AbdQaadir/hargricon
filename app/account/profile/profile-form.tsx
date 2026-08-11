@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Profile } from "@prisma/client"
+import { toast } from "sonner"
 
-import { updateProfile } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
 import { profileSchema, type ProfileValues } from "@/lib/validations/profile"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,8 +16,6 @@ import { Label } from "@/components/ui/label"
 import { DISTRICTS } from "@/lib/districts"
 
 function ProfileForm({ profile }: { profile: Profile }) {
-  const [formError, setFormError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const {
     control,
     handleSubmit,
@@ -31,13 +30,11 @@ function ProfileForm({ profile }: { profile: Profile }) {
   })
 
   async function onSubmit(values: ProfileValues) {
-    setFormError(null)
-    setSuccess(false)
-    const result = await updateProfile(values)
-    if (result?.error) {
-      setFormError(result.error)
-    } else {
-      setSuccess(true)
+    try {
+      await apiClient.patch(API_ROUTES.profile, values)
+      toast.success("Profile updated.")
+    } catch (error) {
+      toast.error(getApiErrorMessage(error))
     }
   }
 
@@ -98,18 +95,6 @@ function ProfileForm({ profile }: { profile: Profile }) {
           </div>
         )}
       />
-
-      {formError && (
-        <div className="rounded-md px-3 py-2 text-sm text-destructive">
-          {formError}
-        </div>
-      )}
-
-      {success && (
-        <div className="rounded-md px-3 py-2 text-sm text-green-600">
-          Profile updated.
-        </div>
-      )}
 
       <Button type="submit" disabled={isSubmitting} className="self-start">
         {isSubmitting ? "Saving..." : "Save changes"}

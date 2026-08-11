@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { ArrowRightIcon, BinocularsIcon } from "@phosphor-icons/react"
 
 import { buttonVariants } from "@/components/ui/button"
+import { authClient } from "@/lib/auth/client"
+import { ROUTES } from "@/lib/routes"
 import { cn } from "@/lib/utils"
 
 const slides: { src: string; alt: string }[] = [
@@ -26,6 +29,8 @@ const SLIDE_DURATION_MS = 5000
 
 function Hero() {
   const [activeSlide, setActiveSlide] = useState(0)
+  const session = authClient.useSession()
+  const isSignedIn = Boolean(session.data?.user)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,13 +79,16 @@ function Hero() {
         </p>
 
         <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
-          <a href="/auth/sign-up" className={buttonVariants({ size: "xl" })}>
-            Register your farm
+          <Link
+            href={isSignedIn ? ROUTES.account : ROUTES.signUp}
+            className={buttonVariants({ size: "xl" })}
+          >
+            {isSignedIn ? "Go to your dashboard" : "Register your farm"}
             <ArrowRightIcon data-icon="inline-end" />
-          </a>
+          </Link>
 
-          <a
-            href="/produce"
+          <Link
+            href={ROUTES.listings}
             className={cn(
               buttonVariants({ variant: "outline", size: "xl" }),
               "border-white/40 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
@@ -88,7 +96,7 @@ function Hero() {
           >
             Find nearby produce
             <BinocularsIcon data-icon="inline-end" />
-          </a>
+          </Link>
         </div>
 
         <div className="mt-12 flex items-center justify-center gap-2">

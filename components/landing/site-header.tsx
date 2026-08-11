@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { UserIcon, SignOutIcon } from "@phosphor-icons/react"
 
 import { Logo } from "@/components/logo"
+import { ROUTES } from "@/lib/routes"
 import { buttonVariants } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -51,7 +52,7 @@ function SiteHeader() {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem render={<Link href="/account" />}>
+                <DropdownMenuItem render={<Link href={ROUTES.account} />}>
                   <UserIcon />
                   Dashboard
                 </DropdownMenuItem>
@@ -59,7 +60,7 @@ function SiteHeader() {
                   variant="destructive"
                   onClick={async () => {
                     await authClient.signOut()
-                    router.push("/")
+                    router.push(ROUTES.home)
                     router.refresh()
                   }}
                 >
@@ -71,13 +72,13 @@ function SiteHeader() {
           ) : (
             <>
               <Link
-                href="/auth/sign-in"
+                href={ROUTES.signIn}
                 className={buttonVariants({ variant: "ghost", size: "sm" })}
               >
                 Sign in
               </Link>
               <Link
-                href="/auth/sign-up"
+                href={ROUTES.signUp}
                 className={buttonVariants({ size: "sm" })}
               >
                 Get Started

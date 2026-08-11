@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "sonner"
 
-import { resetPasswordWithToken } from "./actions"
+import { apiClient, getApiErrorMessage } from "@/lib/api-client"
+import { API_ROUTES } from "@/lib/api-routes"
+import { ROUTES } from "@/lib/routes"
 import {
   resetPasswordSchema,
   type ResetPasswordValues,
@@ -25,9 +27,9 @@ import {
 } from "@/components/ui/card"
 
 export default function ResetPasswordForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
-  const [formError, setFormError] = useState<string | null>(null)
   const {
     control,
     handleSubmit,
@@ -38,10 +40,17 @@ export default function ResetPasswordForm() {
   })
 
   async function onSubmit(values: ResetPasswordValues) {
-    setFormError(null)
-    const result = await resetPasswordWithToken(token ?? "", values)
-    if (result?.error) {
-      setFormError(result.error)
+    try {
+      await apiClient.post(API_ROUTES.resetPassword, {
+        ...values,
+        token: token ?? "",
+      })
+      toast.success("Password reset. Sign in with your new password.")
+      router.push(ROUTES.signIn)
+    } catch (error) {
+      toast.error(
+        getApiErrorMessage(error, "This reset link is invalid or has expired.")
+      )
     }
   }
 
@@ -58,7 +67,7 @@ export default function ResetPasswordForm() {
           </CardHeader>
           <CardFooter>
             <Link
-              href="/auth/forgot-password"
+              href={ROUTES.forgotPassword}
               className="w-full text-center text-sm text-foreground underline underline-offset-4"
             >
               Request a new link
@@ -115,12 +124,6 @@ export default function ResetPasswordForm() {
                   </div>
                 )}
               />
-
-              {formError && (
-                <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  {formError}
-                </div>
-              )}
             </div>
           </CardContent>
 
