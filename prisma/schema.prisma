@@ -76,7 +76,23 @@ model Profile {
 
   listings   Listing[]
   orders     Order[]   @relation("BuyerOrders")
+  farms      Farm[]
 
+  @@index([district])
+}
+
+model Farm {
+  id           String   @id @default(cuid())
+  farmerId     String
+  farmer       Profile  @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  name         String
+  district     District
+  sizeHectares Float?
+  description  String?
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
+
+  @@index([farmerId])
   @@index([district])
 }
 

@@ -1,7 +1,4 @@
-import { redirect } from "next/navigation"
-
-import { getOrCreateProfile } from "@/lib/db/profile"
-import { ROUTES } from "@/lib/routes"
+import { requireProfile } from "@/lib/db/profile"
 import {
   Card,
   CardHeader,
@@ -14,11 +11,7 @@ import { ProfileForm } from "./profile-form"
 export const dynamic = "force-dynamic"
 
 export default async function ProfilePage() {
-  const profile = await getOrCreateProfile()
-
-  if (!profile) {
-    redirect(ROUTES.signIn)
-  }
+  const profile = await requireProfile()
 
   return (
     <Card>

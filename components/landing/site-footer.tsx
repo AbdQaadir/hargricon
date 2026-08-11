@@ -28,7 +28,7 @@ function SiteFooter() {
             How it works
           </a>
           <Link
-            href={isSignedIn ? ROUTES.account : ROUTES.signIn}
+            href={isSignedIn ? ROUTES.dashboard : ROUTES.signIn}
             className="text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
             {isSignedIn ? "Dashboard" : "Sign in"}
