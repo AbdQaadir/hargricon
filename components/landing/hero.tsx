@@ -80,7 +80,7 @@ function Hero() {
 
         <div className="mt-8 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href={isSignedIn ? ROUTES.account : ROUTES.signUp}
+            href={isSignedIn ? ROUTES.dashboard : ROUTES.signUp}
             className={buttonVariants({ size: "xl" })}
           >
             {isSignedIn ? "Go to your dashboard" : "Register your farm"}

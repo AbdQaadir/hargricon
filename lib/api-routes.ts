@@ -4,4 +4,5 @@ export const API_ROUTES = {
   forgotPassword: "/api/forgot-password",
   resetPassword: "/api/reset-password",
   profile: "/api/profile",
+  farms: "/api/farms",
 } as const

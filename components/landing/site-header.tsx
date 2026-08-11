@@ -52,7 +52,7 @@ function SiteHeader() {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem render={<Link href={ROUTES.account} />}>
+                <DropdownMenuItem render={<Link href={ROUTES.dashboard} />}>
                   <UserIcon />
                   Dashboard
                 </DropdownMenuItem>
