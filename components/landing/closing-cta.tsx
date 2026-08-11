@@ -2,10 +2,11 @@
 
 import { ArrowRightIcon, BinocularsIcon } from "@phosphor-icons/react"
 
+import Link from "next/link"
+
 import { authClient } from "@/lib/auth/client"
 import { ROUTES } from "@/lib/routes"
 import { buttonVariants } from "@/components/ui/button"
-import Link from "next/link"
 
 function ClosingCta() {
   const session = authClient.useSession()
@@ -31,13 +32,13 @@ function ClosingCta() {
             <ArrowRightIcon data-icon="inline-end" />
           </Link>
 
-          <a
-            href="/produce"
+          <Link
+            href={ROUTES.listings}
             className={buttonVariants({ variant: "secondary", size: "xl" })}
           >
             Find nearby produce
             <BinocularsIcon data-icon="inline-end" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

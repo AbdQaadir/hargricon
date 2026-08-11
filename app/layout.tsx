@@ -3,6 +3,7 @@ import { Geist_Mono, Manrope, DM_Sans } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 const dmSansHeading = DM_Sans({
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider defaultTheme="light">
           <TooltipProvider>{children}</TooltipProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

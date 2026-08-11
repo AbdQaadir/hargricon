@@ -8,7 +8,7 @@ import { EnvelopeIcon } from "@phosphor-icons/react"
 
 import { apiClient } from "@/lib/api-client"
 import { API_ROUTES } from "@/lib/api-routes"
-
+import { ROUTES } from "@/lib/routes"
 import {
   forgotPasswordSchema,
   type ForgotPasswordValues,
@@ -111,7 +111,7 @@ export default function ForgotPasswordForm() {
           <p className="w-full text-center text-sm text-muted-foreground">
             Remembered your password?{" "}
             <Link
-              href="/auth/sign-in"
+              href={ROUTES.signIn}
               className="text-foreground underline underline-offset-4"
             >
               Sign in

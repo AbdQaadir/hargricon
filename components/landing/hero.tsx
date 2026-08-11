@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { ArrowRightIcon, BinocularsIcon } from "@phosphor-icons/react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { authClient } from "@/lib/auth/client"
 import { ROUTES } from "@/lib/routes"
 import { cn } from "@/lib/utils"
-import Link from "next/link"
 
 const slides: { src: string; alt: string }[] = [
   {
@@ -87,8 +87,8 @@ function Hero() {
             <ArrowRightIcon data-icon="inline-end" />
           </Link>
 
-          <a
-            href="/produce"
+          <Link
+            href={ROUTES.listings}
             className={cn(
               buttonVariants({ variant: "outline", size: "xl" }),
               "border-white/40 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
@@ -96,7 +96,7 @@ function Hero() {
           >
             Find nearby produce
             <BinocularsIcon data-icon="inline-end" />
-          </a>
+          </Link>
         </div>
 
         <div className="mt-12 flex items-center justify-center gap-2">

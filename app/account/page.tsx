@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   const profile = await getOrCreateProfile()
 
   if (!profile) {
-    redirect("/auth/sign-in")
+    redirect(ROUTES.signIn)
   }
 
   const listings = await getListings()

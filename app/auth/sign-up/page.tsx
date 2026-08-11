@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EnvelopeIcon, MapPinIcon, PhoneIcon } from "@phosphor-icons/react"
+import { toast } from "sonner"
 
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
 import { API_ROUTES } from "@/lib/api-routes"
@@ -50,7 +50,6 @@ function Optional() {
 
 export default function SignUpForm() {
   const router = useRouter()
-  const [formError, setFormError] = useState<string | null>(null)
   const {
     control,
     handleSubmit,
@@ -67,13 +66,12 @@ export default function SignUpForm() {
   })
 
   async function onSubmit(values: SignUpValues) {
-    setFormError(null)
     try {
       await apiClient.post(API_ROUTES.signUp, values)
       router.push(ROUTES.home)
       router.refresh()
     } catch (error) {
-      setFormError(getApiErrorMessage(error, "Failed to create account"))
+      toast.error(getApiErrorMessage(error, "Failed to create account"))
     }
   }
 
@@ -234,12 +232,6 @@ export default function SignUpForm() {
                   </div>
                 )}
               />
-
-              {formError && (
-                <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  {formError}
-                </div>
-              )}
             </div>
           </CardContent>
 
@@ -250,7 +242,7 @@ export default function SignUpForm() {
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link
-                href="/auth/sign-in"
+                href={ROUTES.signIn}
                 className="text-foreground underline underline-offset-4"
               >
                 Sign in
