@@ -2,12 +2,15 @@ import Link from "next/link"
 import { MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react/ssr"
 import type { District } from "@prisma/client"
 
-import { CONDITION_LABELS, getUnitLabel } from "@/constants/produce"
+import {
+  CONDITION_LABELS,
+  getUnitLabel,
+  type ListingSort,
+} from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
 import { getPublicListings } from "@/lib/db/listing"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -23,23 +26,21 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { Input } from "@/components/ui/input"
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { ProduceFilters } from "./produce-filters"
 
 export const dynamic = "force-dynamic"
 
 export default async function ListingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ crop?: string; district?: string }>
+  searchParams: Promise<{ crop?: string; district?: string; sort?: string }>
 }) {
-  const { crop = "", district = "" } = await searchParams
+  const { crop = "", district = "", sort = "" } = await searchParams
   const listings = await getPublicListings({
     crop: crop || undefined,
     district: (district as District) || undefined,
+    sort: (sort as ListingSort) || undefined,
   })
-
-  const hasFilters = Boolean(crop || district)
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -53,38 +54,7 @@ export default async function ListingsPage({
         </p>
       </div>
 
-      <form className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Input
-          name="crop"
-          defaultValue={crop}
-          placeholder="Search by crop, e.g. maize"
-          className="sm:max-w-xs"
-        />
-        <NativeSelect
-          name="district"
-          defaultValue={district}
-          className="sm:max-w-52"
-        >
-          <NativeSelectOption value="">All districts</NativeSelectOption>
-          {DISTRICTS.map(({ value, label }) => (
-            <NativeSelectOption key={value} value={value}>
-              {label}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
-        <Button type="submit">
-          <MagnifyingGlassIcon data-icon="inline-start" />
-          Filter
-        </Button>
-        {hasFilters && (
-          <Link
-            href={ROUTES.listings}
-            className={buttonVariants({ variant: "ghost" })}
-          >
-            Clear
-          </Link>
-        )}
-      </form>
+      <ProduceFilters />
 
       {listings.length === 0 ? (
         <Empty className="mt-12">
