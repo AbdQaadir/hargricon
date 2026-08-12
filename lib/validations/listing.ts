@@ -45,3 +45,13 @@ export const listingFormSchema = listingSchema.extend({
 })
 
 export type ListingFormValues = z.infer<typeof listingFormSchema>
+
+// The only two states a farmer can toggle directly; Reserved/Sold/Expired
+// are transaction- or time-driven, not a manual farmer action.
+export const listingAvailabilitySchema = z.object({
+  status: z.enum(["AVAILABLE", "CANCELLED"]),
+})
+
+export type ListingAvailabilityValues = z.infer<
+  typeof listingAvailabilitySchema
+>
