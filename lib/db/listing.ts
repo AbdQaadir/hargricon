@@ -1,6 +1,17 @@
-import type { District } from "@prisma/client"
+import type { District, Prisma } from "@prisma/client"
 
+import type { ListingSort } from "@/constants/produce"
 import { prisma } from "@/lib/db/client"
+
+const SORT_ORDER_BY: Record<
+  ListingSort,
+  Prisma.ListingOrderByWithRelationInput
+> = {
+  newest: { createdAt: "desc" },
+  price_asc: { askingPrice: "asc" },
+  price_desc: { askingPrice: "desc" },
+  harvest_soonest: { harvestDate: "asc" },
+}
 
 const farmerContactSelect = {
   firstName: true,
@@ -28,9 +39,11 @@ export async function getListingForFarmer(id: string, farmerId: string) {
 export async function getPublicListings({
   crop,
   district,
+  sort = "newest",
 }: {
   crop?: string
   district?: District
+  sort?: ListingSort
 } = {}) {
   return prisma.listing.findMany({
     where: {
@@ -44,7 +57,7 @@ export async function getPublicListings({
       crop: true,
       farmer: { select: farmerContactSelect },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: SORT_ORDER_BY[sort],
   })
 }
 

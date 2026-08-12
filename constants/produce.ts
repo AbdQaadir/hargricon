@@ -28,3 +28,13 @@ export const STATUS_LABELS: Record<ListingStatus, string> = {
   EXPIRED: "Expired",
   CANCELLED: "Cancelled",
 }
+
+export type ListingSort =
+  "newest" | "price_asc" | "price_desc" | "harvest_soonest"
+
+export const SORT_LABELS: Record<ListingSort, string> = {
+  newest: "Newest first",
+  price_asc: "Price: low to high",
+  price_desc: "Price: high to low",
+  harvest_soonest: "Harvest date: soonest",
+}
