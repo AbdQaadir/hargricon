@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import type { Crop, District } from "@prisma/client"
+import type { Crop, Listing } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon } from "@phosphor-icons/react"
+import { PencilSimpleIcon } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
@@ -24,14 +24,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ProduceFormFields } from "./produce-form-fields"
+import { ProduceFormFields } from "../produce-form-fields"
 
-function AddProduceDialog({
+function EditProduceDialog({
+  listing,
   crops,
-  defaultDistrict,
 }: {
+  listing: Listing
   crops: Crop[]
-  defaultDistrict: District
 }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -39,31 +39,29 @@ function AddProduceDialog({
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<ListingFormValues>({
     resolver: zodResolver(listingFormSchema),
     defaultValues: {
-      cropId: "",
-      quantity: "",
-      unit: undefined,
-      condition: undefined,
-      askingPrice: "",
-      harvestDate: "",
-      district: defaultDistrict,
-      description: "",
+      cropId: listing.cropId,
+      quantity: String(listing.quantity),
+      unit: listing.unit as ListingFormValues["unit"],
+      condition: listing.condition,
+      askingPrice: String(listing.askingPrice),
+      harvestDate: listing.harvestDate.toISOString().slice(0, 10),
+      district: listing.district,
+      description: listing.description ?? "",
     },
   })
 
   async function onSubmit(values: ListingFormValues) {
     try {
-      await apiClient.post(API_ROUTES.listings, {
+      await apiClient.patch(API_ROUTES.listing(listing.id), {
         ...values,
         quantity: Number(values.quantity),
         askingPrice: Number(values.askingPrice),
       })
-      toast.success("Produce listed.")
-      reset()
+      toast.success("Produce updated.")
       setOpen(false)
       router.refresh()
     } catch (error) {
@@ -73,15 +71,15 @@ function AddProduceDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>
-        <PlusIcon data-icon="inline-start" />
-        Add produce
+      <DialogTrigger render={<Button variant="outline" size="sm" />}>
+        <PencilSimpleIcon data-icon="inline-start" />
+        Edit
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>List new produce</DialogTitle>
+          <DialogTitle>Edit produce</DialogTitle>
           <DialogDescription>
-            Buyers will see this in the marketplace once it&apos;s listed.
+            Changes apply immediately to your marketplace listing.
           </DialogDescription>
         </DialogHeader>
 
@@ -90,7 +88,7 @@ function AddProduceDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Listing..." : "Add produce"}
+              {isSubmitting ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </form>
@@ -99,4 +97,4 @@ function AddProduceDialog({
   )
 }
 
-export { AddProduceDialog }
+export { EditProduceDialog }

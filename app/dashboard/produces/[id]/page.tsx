@@ -8,11 +8,14 @@ import {
   STATUS_LABELS,
 } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
+import { getCrops } from "@/lib/db/crop"
 import { getListingForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { AvailabilityToggle } from "./availability-toggle"
+import { EditProduceDialog } from "./edit-produce-dialog"
 
 export const dynamic = "force-dynamic"
 
@@ -23,7 +26,10 @@ export default async function DashboardProducePage({
 }) {
   const profile = await requireProfile()
   const { id } = await params
-  const listing = await getListingForFarmer(id, profile.id)
+  const [listing, crops] = await Promise.all([
+    getListingForFarmer(id, profile.id),
+    getCrops(),
+  ])
 
   if (!listing) {
     notFound()
@@ -67,6 +73,11 @@ export default async function DashboardProducePage({
             <MapPinIcon className="size-4" />
             {districtLabel}
           </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <AvailabilityToggle listingId={listing.id} status={listing.status} />
+          <EditProduceDialog listing={listing} crops={crops} />
         </div>
       </div>
 

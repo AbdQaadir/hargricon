@@ -1,9 +1,10 @@
 import Link from "next/link"
 import { MagnifyingGlassIcon, MapPinIcon } from "@phosphor-icons/react/ssr"
+import type { District } from "@prisma/client"
 
-import { CONDITION_LABELS, UNIT_LABELS } from "@/constants/listings"
+import { CONDITION_LABELS, getUnitLabel } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
-import { getListings } from "@/lib/listings"
+import { getPublicListings } from "@/lib/db/listing"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -25,21 +26,17 @@ import {
 import { Input } from "@/components/ui/input"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 
+export const dynamic = "force-dynamic"
+
 export default async function ListingsPage({
   searchParams,
 }: {
   searchParams: Promise<{ crop?: string; district?: string }>
 }) {
   const { crop = "", district = "" } = await searchParams
-  const listings = await getListings()
-
-  const filtered = listings.filter((listing) => {
-    if (listing.status !== "ACTIVE") return false
-    if (crop && !listing.cropName.toLowerCase().includes(crop.toLowerCase())) {
-      return false
-    }
-    if (district && listing.district !== district) return false
-    return true
+  const listings = await getPublicListings({
+    crop: crop || undefined,
+    district: (district as District) || undefined,
   })
 
   const hasFilters = Boolean(crop || district)
@@ -89,7 +86,7 @@ export default async function ListingsPage({
         )}
       </form>
 
-      {filtered.length === 0 ? (
+      {listings.length === 0 ? (
         <Empty className="mt-12">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -104,7 +101,7 @@ export default async function ListingsPage({
         </Empty>
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((listing) => {
+          {listings.map((listing) => {
             const districtLabel =
               DISTRICTS.find((d) => d.value === listing.district)?.label ??
               listing.district
@@ -117,7 +114,7 @@ export default async function ListingsPage({
                 <Card className="h-full transition-shadow hover:shadow-md">
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle>{listing.cropName}</CardTitle>
+                      <CardTitle>{listing.crop.name}</CardTitle>
                       <Badge variant="outline">
                         {CONDITION_LABELS[listing.condition]}
                       </Badge>
@@ -129,14 +126,14 @@ export default async function ListingsPage({
                   </CardHeader>
                   <CardContent className="flex flex-col gap-1">
                     <span className="font-heading text-2xl font-bold text-primary">
-                      {listing.pricePerUnit.toLocaleString()} RWF{" "}
+                      {listing.askingPrice.toLocaleString()} RWF{" "}
                       <span className="text-sm font-normal text-muted-foreground">
-                        / {UNIT_LABELS[listing.unit]}
+                        / {getUnitLabel(listing.unit)}
                       </span>
                     </span>
                     <span className="text-sm text-muted-foreground">
                       {listing.quantity.toLocaleString()}{" "}
-                      {UNIT_LABELS[listing.unit]} available
+                      {getUnitLabel(listing.unit)} available
                     </span>
                   </CardContent>
                   <CardFooter>

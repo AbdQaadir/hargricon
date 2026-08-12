@@ -9,11 +9,11 @@ import {
 
 import {
   CONDITION_LABELS,
+  getUnitLabel,
   STATUS_LABELS,
-  UNIT_LABELS,
-} from "@/constants/listings"
+} from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
-import { getListing } from "@/lib/listings"
+import { getPublicListing } from "@/lib/db/listing"
 import { ROUTES } from "@/lib/routes"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -27,13 +27,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+export const dynamic = "force-dynamic"
+
 export default async function ListingDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const listing = await getListing(id)
+  const listing = await getPublicListing(id)
 
   if (!listing) {
     notFound()
@@ -49,10 +51,11 @@ export default async function ListingDetailPage({
   const whatsappDigits = (
     listing.farmer?.whatsapp ?? listing.farmer?.phone
   )?.replace(/\D/g, "")
-  const harvestDateLabel = new Date(listing.harvestDate).toLocaleDateString(
-    "en-GB",
-    { day: "numeric", month: "short", year: "numeric" }
-  )
+  const harvestDateLabel = listing.harvestDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
@@ -68,12 +71,12 @@ export default async function ListingDetailPage({
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-heading text-3xl font-bold tracking-tight">
-              {listing.cropName}
+              {listing.crop.name}
             </h1>
             <Badge variant="outline">
               {CONDITION_LABELS[listing.condition]}
             </Badge>
-            {listing.status !== "ACTIVE" && (
+            {listing.status !== "AVAILABLE" && (
               <Badge variant="secondary">{STATUS_LABELS[listing.status]}</Badge>
             )}
           </div>
@@ -85,22 +88,24 @@ export default async function ListingDetailPage({
 
         <div className="text-left sm:text-right">
           <span className="font-heading text-3xl font-bold text-primary">
-            {listing.pricePerUnit.toLocaleString()} RWF
+            {listing.askingPrice.toLocaleString()} RWF
           </span>
           <span className="block text-sm text-muted-foreground">
-            per {UNIT_LABELS[listing.unit]}
+            per {getUnitLabel(listing.unit)}
           </span>
         </div>
       </div>
 
       <Card className="mt-8">
         <CardContent className="flex flex-col gap-5">
-          <p className="text-muted-foreground">{listing.description}</p>
+          {listing.description && (
+            <p className="text-muted-foreground">{listing.description}</p>
+          )}
           <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
             <div>
               <dt className="text-muted-foreground">Available</dt>
               <dd className="font-medium">
-                {listing.quantity.toLocaleString()} {UNIT_LABELS[listing.unit]}
+                {listing.quantity.toLocaleString()} {getUnitLabel(listing.unit)}
               </dd>
             </div>
             <div>
