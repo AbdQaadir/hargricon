@@ -1,12 +1,16 @@
 import Link from "next/link"
-import { BinocularsIcon, PlantIcon } from "@phosphor-icons/react/ssr"
+import { PlantIcon } from "@phosphor-icons/react/ssr"
 
-import { STATUS_LABELS, UNIT_LABELS } from "@/constants/listings"
+import {
+  CONDITION_LABELS,
+  getUnitLabel,
+  STATUS_LABELS,
+} from "@/constants/produce"
+import { getCrops } from "@/lib/db/crop"
+import { getListingsForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
-import { getListings } from "@/lib/listings"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
@@ -20,15 +24,16 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { AddProduceDialog } from "./add-produce-dialog"
 
 export const dynamic = "force-dynamic"
 
 export default async function ProducesPage() {
   const profile = await requireProfile()
-  const listings = await getListings()
-  const myListings = listings.filter(
-    (listing) => listing.farmerAuthUserId === profile.authUserId
-  )
+  const [listings, crops] = await Promise.all([
+    getListingsForFarmer(profile.id),
+    getCrops(),
+  ])
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,16 +46,10 @@ export default async function ProducesPage() {
             Manage the produce you&apos;ve listed for sale.
           </p>
         </div>
-        <Link
-          href={ROUTES.listings}
-          className={buttonVariants({ variant: "outline", size: "sm" })}
-        >
-          <BinocularsIcon data-icon="inline-start" />
-          Browse marketplace
-        </Link>
+        <AddProduceDialog crops={crops} defaultDistrict={profile.district} />
       </div>
 
-      {myListings.length === 0 ? (
+      {listings.length === 0 ? (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -64,15 +63,15 @@ export default async function ProducesPage() {
         </Empty>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {myListings.map((listing) => (
+          {listings.map((listing) => (
             <Link key={listing.id} href={ROUTES.dashboardProduce(listing.id)}>
               <Card className="h-full transition-shadow hover:shadow-md">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle>{listing.cropName}</CardTitle>
+                    <CardTitle>{listing.crop.name}</CardTitle>
                     <Badge
                       variant={
-                        listing.status === "ACTIVE" ? "default" : "secondary"
+                        listing.status === "AVAILABLE" ? "default" : "secondary"
                       }
                     >
                       {STATUS_LABELS[listing.status]}
@@ -80,9 +79,10 @@ export default async function ProducesPage() {
                   </div>
                   <CardDescription>
                     {listing.quantity.toLocaleString()}{" "}
-                    {UNIT_LABELS[listing.unit]} at{" "}
-                    {listing.pricePerUnit.toLocaleString()} RWF per{" "}
-                    {UNIT_LABELS[listing.unit]}
+                    {getUnitLabel(listing.unit)} at{" "}
+                    {listing.askingPrice.toLocaleString()} RWF per{" "}
+                    {getUnitLabel(listing.unit)} ·{" "}
+                    {CONDITION_LABELS[listing.condition]}
                   </CardDescription>
                 </CardHeader>
               </Card>

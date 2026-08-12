@@ -4,15 +4,14 @@ import { ArrowLeftIcon, MapPinIcon } from "@phosphor-icons/react/ssr"
 
 import {
   CONDITION_LABELS,
+  getUnitLabel,
   STATUS_LABELS,
-  UNIT_LABELS,
-} from "@/constants/listings"
+} from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
+import { getListingForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
-import { getListing } from "@/lib/listings"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export const dynamic = "force-dynamic"
@@ -24,19 +23,20 @@ export default async function DashboardProducePage({
 }) {
   const profile = await requireProfile()
   const { id } = await params
-  const listing = await getListing(id)
+  const listing = await getListingForFarmer(id, profile.id)
 
-  if (!listing || listing.farmerAuthUserId !== profile.authUserId) {
+  if (!listing) {
     notFound()
   }
 
   const districtLabel =
     DISTRICTS.find((d) => d.value === listing.district)?.label ??
     listing.district
-  const harvestDateLabel = new Date(listing.harvestDate).toLocaleDateString(
-    "en-GB",
-    { day: "numeric", month: "short", year: "numeric" }
-  )
+  const harvestDateLabel = listing.harvestDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
 
   return (
     <div className="flex flex-col gap-6">
@@ -52,13 +52,13 @@ export default async function DashboardProducePage({
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="font-heading text-2xl font-bold tracking-tight">
-              {listing.cropName}
+              {listing.crop.name}
             </h1>
             <Badge variant="outline">
               {CONDITION_LABELS[listing.condition]}
             </Badge>
             <Badge
-              variant={listing.status === "ACTIVE" ? "default" : "secondary"}
+              variant={listing.status === "AVAILABLE" ? "default" : "secondary"}
             >
               {STATUS_LABELS[listing.status]}
             </Badge>
@@ -68,30 +68,25 @@ export default async function DashboardProducePage({
             {districtLabel}
           </p>
         </div>
-
-        <Link
-          href={ROUTES.listing(listing.id)}
-          className={buttonVariants({ variant: "outline", size: "sm" })}
-        >
-          View public listing
-        </Link>
       </div>
 
       <Card>
         <CardContent className="flex flex-col gap-5">
-          <p className="text-muted-foreground">{listing.description}</p>
+          {listing.description && (
+            <p className="text-muted-foreground">{listing.description}</p>
+          )}
           <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
             <div>
               <dt className="text-muted-foreground">Available</dt>
               <dd className="font-medium">
-                {listing.quantity.toLocaleString()} {UNIT_LABELS[listing.unit]}
+                {listing.quantity.toLocaleString()} {getUnitLabel(listing.unit)}
               </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Price</dt>
               <dd className="font-medium">
-                {listing.pricePerUnit.toLocaleString()} RWF /{" "}
-                {UNIT_LABELS[listing.unit]}
+                {listing.askingPrice.toLocaleString()} RWF /{" "}
+                {getUnitLabel(listing.unit)}
               </dd>
             </div>
             <div>

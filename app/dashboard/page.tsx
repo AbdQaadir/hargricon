@@ -7,9 +7,9 @@ import {
 } from "@phosphor-icons/react/ssr"
 
 import { getFarms } from "@/lib/db/farm"
+import { getListingsForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { DISTRICTS } from "@/lib/districts"
-import { getListings } from "@/lib/listings"
 import { ROUTES } from "@/lib/routes"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -28,13 +28,10 @@ export default async function DashboardOverviewPage() {
 
   const [farms, listings] = await Promise.all([
     getFarms(profile.id),
-    getListings(),
+    getListingsForFarmer(profile.id),
   ])
-  const myListings = listings.filter(
-    (listing) => listing.farmerAuthUserId === profile.authUserId
-  )
-  const activeListings = myListings.filter(
-    (listing) => listing.status === "ACTIVE"
+  const activeListings = listings.filter(
+    (listing) => listing.status === "AVAILABLE"
   )
   const districtLabel =
     DISTRICTS.find((d) => d.value === profile.district)?.label ??
@@ -88,7 +85,7 @@ export default async function DashboardOverviewPage() {
         <Card>
           <CardHeader>
             <CardDescription>Total listings</CardDescription>
-            <CardTitle className="text-3xl">{myListings.length}</CardTitle>
+            <CardTitle className="text-3xl">{listings.length}</CardTitle>
           </CardHeader>
           <CardFooter>
             <Link
