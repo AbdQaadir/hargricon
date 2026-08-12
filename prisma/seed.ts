@@ -1,5 +1,18 @@
 import { prisma } from "@/lib/db/client"
 
+const crops = [
+  { name: "Irish potato", category: "Tuber" },
+  { name: "Sweet potato", category: "Tuber" },
+  { name: "Cassava", category: "Tuber" },
+  { name: "Maize", category: "Grain" },
+  { name: "Rice", category: "Grain" },
+  { name: "Beans", category: "Legume" },
+  { name: "Groundnut", category: "Legume" },
+  { name: "Tomato", category: "Vegetable" },
+  { name: "Avocado", category: "Fruit" },
+  { name: "Banana", category: "Fruit" },
+]
+
 const demoFarmers = [
   {
     authUserId: "seed-farmer-1",
@@ -37,6 +50,16 @@ async function main() {
   }
 
   console.log(`Seeded ${demoFarmers.length} demo farmer profiles.`)
+
+  for (const crop of crops) {
+    await prisma.crop.upsert({
+      where: { name: crop.name },
+      update: { category: crop.category },
+      create: crop,
+    })
+  }
+
+  console.log(`Seeded ${crops.length} crops.`)
 }
 
 main()
