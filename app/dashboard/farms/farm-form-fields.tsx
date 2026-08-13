@@ -28,6 +28,11 @@ function FarmFormFields({
               onChange={field.onChange}
               folder="hargricon/farms"
             />
+            {errors.images && (
+              <p className="text-sm text-destructive">
+                {errors.images.message}
+              </p>
+            )}
           </div>
         )}
       />

@@ -34,6 +34,11 @@ function ProduceFormFields({
               onChange={field.onChange}
               folder="hargricon/produce"
             />
+            {errors.images && (
+              <p className="text-sm text-destructive">
+                {errors.images.message}
+              </p>
+            )}
           </div>
         )}
       />

@@ -36,7 +36,10 @@ export const listingSchema = z.object({
   harvestDate: z.string().min(1, "Harvest date is required"),
   district: z.enum(districtValues, { message: "Select a district" }),
   description: z.string().trim().optional(),
-  images: z.array(z.string()).max(5, "Up to 5 photos"),
+  images: z
+    .array(z.string())
+    .min(1, "Add at least one photo")
+    .max(5, "Up to 5 photos"),
 })
 
 export type ListingValues = z.infer<typeof listingSchema>
