@@ -5,6 +5,7 @@ export const API_ROUTES = {
   resetPassword: "/api/reset-password",
   profile: "/api/profile",
   farms: "/api/farms",
+  farm: (id: string) => `/api/farms/${id}`,
   listings: "/api/listings",
   listing: (id: string) => `/api/listings/${id}`,
   listingStatus: (id: string) => `/api/listings/${id}/status`,

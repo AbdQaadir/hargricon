@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { ImageGallery } from "@/components/image-gallery"
 
 export const dynamic = "force-dynamic"
 
@@ -95,6 +96,12 @@ export default async function ListingDetailPage({
           </span>
         </div>
       </div>
+
+      {listing.images.length > 0 && (
+        <div className="mt-6">
+          <ImageGallery images={listing.images} alt={listing.crop.name} />
+        </div>
+      )}
 
       <Card className="mt-8">
         <CardContent className="flex flex-col gap-5">

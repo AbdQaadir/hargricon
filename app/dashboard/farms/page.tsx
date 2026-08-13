@@ -1,15 +1,7 @@
-import { BarnIcon, MapPinIcon } from "@phosphor-icons/react/ssr"
+import { BarnIcon } from "@phosphor-icons/react/ssr"
 
 import { getFarms } from "@/lib/db/farm"
 import { requireProfile } from "@/lib/db/profile"
-import { DISTRICTS } from "@/lib/districts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import {
   Empty,
   EmptyDescription,
@@ -17,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { FarmCard } from "@/components/farm-card"
 import { AddFarmDialog } from "./add-farm-dialog"
 
 export const dynamic = "force-dynamic"
@@ -52,34 +45,10 @@ export default async function FarmsPage() {
           </EmptyHeader>
         </Empty>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {farms.map((farm) => {
-            const districtLabel =
-              DISTRICTS.find((d) => d.value === farm.district)?.label ??
-              farm.district
-
-            return (
-              <Card key={farm.id}>
-                <CardHeader>
-                  <CardTitle>{farm.name}</CardTitle>
-                  <CardDescription className="flex items-center gap-1">
-                    <MapPinIcon className="size-3.5" />
-                    {districtLabel}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-1 text-sm">
-                  {farm.sizeHectares != null && (
-                    <span>{farm.sizeHectares.toLocaleString()} ha</span>
-                  )}
-                  {farm.description && (
-                    <span className="text-muted-foreground">
-                      {farm.description}
-                    </span>
-                  )}
-                </CardContent>
-              </Card>
-            )
-          })}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {farms.map((farm) => (
+            <FarmCard key={farm.id} farm={farm} />
+          ))}
         </div>
       )}
     </div>

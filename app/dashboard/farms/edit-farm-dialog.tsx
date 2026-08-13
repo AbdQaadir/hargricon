@@ -2,9 +2,10 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import type { Farm } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon } from "@phosphor-icons/react"
+import { PencilSimpleIcon } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
@@ -22,36 +23,34 @@ import {
 } from "@/components/ui/dialog"
 import { FarmFormFields } from "./farm-form-fields"
 
-function AddFarmDialog() {
+function EditFarmDialog({ farm }: { farm: Farm }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FarmFormValues>({
     resolver: zodResolver(farmFormSchema),
     defaultValues: {
-      name: "",
-      district: undefined,
-      sizeHectares: "",
-      description: "",
-      images: [],
+      name: farm.name,
+      district: farm.district,
+      sizeHectares: farm.sizeHectares != null ? String(farm.sizeHectares) : "",
+      description: farm.description ?? "",
+      images: farm.images,
     },
   })
 
   async function onSubmit(values: FarmFormValues) {
     try {
-      await apiClient.post(API_ROUTES.farms, {
+      await apiClient.patch(API_ROUTES.farm(farm.id), {
         ...values,
         sizeHectares: values.sizeHectares
           ? Number(values.sizeHectares)
           : undefined,
       })
-      toast.success("Farm added.")
-      reset()
+      toast.success("Farm updated.")
       setOpen(false)
       router.refresh()
     } catch (error) {
@@ -61,14 +60,16 @@ function AddFarmDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>
-        <PlusIcon data-icon="inline-start" />
-        Add farm
+      <DialogTrigger render={<Button variant="outline" size="sm" />}>
+        <PencilSimpleIcon data-icon="inline-start" />
+        Edit
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a farm</DialogTitle>
-          <DialogDescription>Farms you manage produce from.</DialogDescription>
+          <DialogTitle>Edit farm</DialogTitle>
+          <DialogDescription>
+            Changes apply immediately to your farm details.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -76,7 +77,7 @@ function AddFarmDialog() {
 
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Adding..." : "Add farm"}
+              {isSubmitting ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </form>
@@ -85,4 +86,4 @@ function AddFarmDialog() {
   )
 }
 
-export { AddFarmDialog }
+export { EditFarmDialog }

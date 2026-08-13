@@ -28,6 +28,7 @@ function positiveNumberString(message: string) {
 
 export const listingSchema = z.object({
   cropId: z.string().min(1, "Select a crop"),
+  farmId: z.string().optional(),
   quantity: z.number().positive("Quantity must be greater than 0"),
   unit: z.enum(unitValues, { message: "Select a unit" }),
   condition: z.enum(conditionValues, { message: "Select a condition" }),
@@ -35,6 +36,7 @@ export const listingSchema = z.object({
   harvestDate: z.string().min(1, "Harvest date is required"),
   district: z.enum(districtValues, { message: "Select a district" }),
   description: z.string().trim().optional(),
+  images: z.array(z.string()).max(5, "Up to 5 photos"),
 })
 
 export type ListingValues = z.infer<typeof listingSchema>

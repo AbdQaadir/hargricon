@@ -35,6 +35,7 @@ export async function POST(request: Request) {
 
   const {
     cropId,
+    farmId,
     quantity,
     unit,
     condition,
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
     harvestDate,
     district,
     description,
+    images,
   } = parsed.data
 
   const crop = await prisma.crop.findUnique({ where: { id: cropId } })
@@ -50,9 +52,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Select a crop." }, { status: 400 })
   }
 
+  if (farmId) {
+    const farm = await prisma.farm.findFirst({
+      where: { id: farmId, farmerId: profile.id },
+    })
+    if (!farm) {
+      return NextResponse.json(
+        { error: "Select a valid farm." },
+        { status: 400 }
+      )
+    }
+  }
+
   const listing = await prisma.listing.create({
     data: {
       farmerId: profile.id,
+      farmId: farmId || null,
       cropId,
       quantity,
       unit,
@@ -61,6 +76,7 @@ export async function POST(request: Request) {
       harvestDate: new Date(harvestDate),
       district,
       description: description || null,
+      images,
     },
   })
 

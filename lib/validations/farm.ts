@@ -14,6 +14,7 @@ export const farmSchema = z.object({
   }),
   sizeHectares: z.number().positive("Size must be greater than 0").optional(),
   description: z.string().trim().optional(),
+  images: z.array(z.string()).max(5, "Up to 5 photos"),
 })
 
 export type FarmValues = z.infer<typeof farmSchema>
