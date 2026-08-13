@@ -95,6 +95,7 @@ model Farm {
   district     District
   sizeHectares Float?
   description  String?
+  images       String[] @default([])
   createdAt    DateTime @default(now()) @db.Timestamptz
   updatedAt    DateTime @updatedAt @db.Timestamptz
 
@@ -124,6 +125,7 @@ model Listing {
   unit             String
   condition        ListingCondition
   description      String?
+  images           String[]      @default([])
   askingPrice      Float
   recommendedPrice Float?
   harvestDate      DateTime      @db.Date
