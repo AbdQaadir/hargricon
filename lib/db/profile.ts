@@ -42,17 +42,25 @@ export const getOrCreateProfile = cache(async function getOrCreateProfile() {
     })
   } catch (error) {
     // Two concurrent requests for a brand-new user (e.g. two tabs) can both
-    // miss the findUnique above and race to create the same profile.
-    // Whichever loses the race just reads back what the winner created.
+    // miss the findUnique above and race to create the same profile, in
+    // which case whichever loses the race just reads back what the winner
+    // created. Separately, the auth provider can issue a new authUserId for
+    // the same email (account reset/recreation), in which case we re-point
+    // the existing row at the new id instead of leaving it orphaned.
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      const profile = await prisma.profile.findUnique({
-        where: { authUserId: user.id },
+      const profile = await prisma.profile.findFirst({
+        where: { OR: [{ authUserId: user.id }, { email: user.email }] },
       })
       if (profile) {
-        return profile
+        return profile.authUserId === user.id
+          ? profile
+          : await prisma.profile.update({
+              where: { id: profile.id },
+              data: { authUserId: user.id },
+            })
       }
     }
     throw error

@@ -9,11 +9,13 @@ import {
 } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
 import { getCrops } from "@/lib/db/crop"
+import { getFarms } from "@/lib/db/farm"
 import { getListingForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { ImageGallery } from "@/components/image-gallery"
 import { AvailabilityToggle } from "./availability-toggle"
 import { EditProduceDialog } from "./edit-produce-dialog"
 
@@ -26,9 +28,10 @@ export default async function DashboardProducePage({
 }) {
   const profile = await requireProfile()
   const { id } = await params
-  const [listing, crops] = await Promise.all([
+  const [listing, crops, farms] = await Promise.all([
     getListingForFarmer(id, profile.id),
     getCrops(),
+    getFarms(profile.id),
   ])
 
   if (!listing) {
@@ -77,9 +80,11 @@ export default async function DashboardProducePage({
 
         <div className="flex items-center gap-3">
           <AvailabilityToggle listingId={listing.id} status={listing.status} />
-          <EditProduceDialog listing={listing} crops={crops} />
+          <EditProduceDialog listing={listing} crops={crops} farms={farms} />
         </div>
       </div>
+
+      <ImageGallery images={listing.images} alt={listing.crop.name} />
 
       <Card>
         <CardContent className="flex flex-col gap-5">
@@ -110,6 +115,12 @@ export default async function DashboardProducePage({
                 {CONDITION_LABELS[listing.condition]}
               </dd>
             </div>
+            {listing.farm && (
+              <div>
+                <dt className="text-muted-foreground">Farm</dt>
+                <dd className="font-medium">{listing.farm.name}</dd>
+              </div>
+            )}
           </dl>
         </CardContent>
       </Card>

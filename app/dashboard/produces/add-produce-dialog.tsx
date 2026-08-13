@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import type { Crop, District } from "@prisma/client"
+import type { Crop, District, Farm } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon } from "@phosphor-icons/react"
@@ -28,9 +28,11 @@ import { ProduceFormFields } from "./produce-form-fields"
 
 function AddProduceDialog({
   crops,
+  farms,
   defaultDistrict,
 }: {
   crops: Crop[]
+  farms: Farm[]
   defaultDistrict: District
 }) {
   const [open, setOpen] = useState(false)
@@ -45,6 +47,7 @@ function AddProduceDialog({
     resolver: zodResolver(listingFormSchema),
     defaultValues: {
       cropId: "",
+      farmId: "",
       quantity: "",
       unit: undefined,
       condition: undefined,
@@ -52,6 +55,7 @@ function AddProduceDialog({
       harvestDate: "",
       district: defaultDistrict,
       description: "",
+      images: [],
     },
   })
 
@@ -86,7 +90,12 @@ function AddProduceDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <ProduceFormFields control={control} errors={errors} crops={crops} />
+          <ProduceFormFields
+            control={control}
+            errors={errors}
+            crops={crops}
+            farms={farms}
+          />
 
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>

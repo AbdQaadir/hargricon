@@ -26,6 +26,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import { ProduceThumbnail } from "@/components/produce-thumbnail"
 import { ProduceFilters } from "./produce-filters"
 
 export const dynamic = "force-dynamic"
@@ -82,6 +83,10 @@ export default async function ListingsPage({
             return (
               <Link key={listing.id} href={ROUTES.listing(listing.id)}>
                 <Card className="h-full transition-shadow hover:shadow-md">
+                  <ProduceThumbnail
+                    images={listing.images}
+                    alt={listing.crop.name}
+                  />
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2">
                       <CardTitle>{listing.crop.name}</CardTitle>

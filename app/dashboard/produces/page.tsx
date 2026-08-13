@@ -7,8 +7,10 @@ import {
   STATUS_LABELS,
 } from "@/constants/produce"
 import { getCrops } from "@/lib/db/crop"
+import { getFarms } from "@/lib/db/farm"
 import { getListingsForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
+import { DISTRICTS } from "@/lib/districts"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -24,15 +26,25 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { ProduceThumbnail } from "@/components/produce-thumbnail"
 import { AddProduceDialog } from "./add-produce-dialog"
 
 export const dynamic = "force-dynamic"
 
 export default async function ProducesPage() {
   const profile = await requireProfile()
-  const [listings, crops] = await Promise.all([
+  const [listings, crops, farms] = await Promise.all([
     getListingsForFarmer(profile.id),
     getCrops(),
+    getFarms(profile.id),
   ])
 
   return (
@@ -46,7 +58,11 @@ export default async function ProducesPage() {
             Manage the produce you&apos;ve listed for sale.
           </p>
         </div>
-        <AddProduceDialog crops={crops} defaultDistrict={profile.district} />
+        <AddProduceDialog
+          crops={crops}
+          farms={farms}
+          defaultDistrict={profile.district}
+        />
       </div>
 
       {listings.length === 0 ? (
@@ -62,33 +78,114 @@ export default async function ProducesPage() {
           </EmptyHeader>
         </Empty>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {listings.map((listing) => (
-            <Link key={listing.id} href={ROUTES.dashboardProduce(listing.id)}>
-              <Card className="h-full transition-shadow hover:shadow-md">
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-2">
-                    <CardTitle>{listing.crop.name}</CardTitle>
-                    <Badge
-                      variant={
-                        listing.status === "AVAILABLE" ? "default" : "secondary"
-                      }
-                    >
-                      {STATUS_LABELS[listing.status]}
-                    </Badge>
-                  </div>
-                  <CardDescription>
-                    {listing.quantity.toLocaleString()}{" "}
-                    {getUnitLabel(listing.unit)} at{" "}
-                    {listing.askingPrice.toLocaleString()} RWF per{" "}
-                    {getUnitLabel(listing.unit)} ·{" "}
-                    {CONDITION_LABELS[listing.condition]}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
+            {listings.map((listing) => (
+              <Link key={listing.id} href={ROUTES.dashboardProduce(listing.id)}>
+                <Card className="h-full transition-shadow hover:shadow-md">
+                  <ProduceThumbnail
+                    images={listing.images}
+                    alt={listing.crop.name}
+                  />
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle>{listing.crop.name}</CardTitle>
+                      <Badge
+                        variant={
+                          listing.status === "AVAILABLE"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {STATUS_LABELS[listing.status]}
+                      </Badge>
+                    </div>
+                    <CardDescription>
+                      {listing.quantity.toLocaleString()}{" "}
+                      {getUnitLabel(listing.unit)} at{" "}
+                      {listing.askingPrice.toLocaleString()} RWF per{" "}
+                      {getUnitLabel(listing.unit)} ·{" "}
+                      {CONDITION_LABELS[listing.condition]}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          <Card className="hidden py-0 lg:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Produce</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Condition</TableHead>
+                  <TableHead>District</TableHead>
+                  <TableHead>Harvest date</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {listings.map((listing) => {
+                  const districtLabel =
+                    DISTRICTS.find((d) => d.value === listing.district)
+                      ?.label ?? listing.district
+                  const harvestDateLabel =
+                    listing.harvestDate.toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+
+                  return (
+                    <TableRow key={listing.id}>
+                      <TableCell>
+                        <Link
+                          href={ROUTES.dashboardProduce(listing.id)}
+                          className="flex items-center gap-3"
+                        >
+                          <ProduceThumbnail
+                            images={listing.images}
+                            alt={listing.crop.name}
+                            className="size-10 shrink-0 rounded-md object-cover"
+                          />
+                          <span className="font-medium">
+                            {listing.crop.name}
+                          </span>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        {listing.quantity.toLocaleString()}{" "}
+                        {getUnitLabel(listing.unit)}
+                      </TableCell>
+                      <TableCell>
+                        {listing.askingPrice.toLocaleString()} RWF/
+                        {getUnitLabel(listing.unit)}
+                      </TableCell>
+                      <TableCell>
+                        {CONDITION_LABELS[listing.condition]}
+                      </TableCell>
+                      <TableCell>{districtLabel}</TableCell>
+                      <TableCell>{harvestDateLabel}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            listing.status === "AVAILABLE"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {STATUS_LABELS[listing.status]}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        </>
       )}
     </div>
   )

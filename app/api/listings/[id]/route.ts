@@ -47,6 +47,7 @@ export async function PATCH(
 
   const {
     cropId,
+    farmId,
     quantity,
     unit,
     condition,
@@ -54,6 +55,7 @@ export async function PATCH(
     harvestDate,
     district,
     description,
+    images,
   } = parsed.data
 
   const crop = await prisma.crop.findUnique({ where: { id: cropId } })
@@ -62,10 +64,23 @@ export async function PATCH(
     return NextResponse.json({ error: "Select a crop." }, { status: 400 })
   }
 
+  if (farmId) {
+    const farm = await prisma.farm.findFirst({
+      where: { id: farmId, farmerId: profile.id },
+    })
+    if (!farm) {
+      return NextResponse.json(
+        { error: "Select a valid farm." },
+        { status: 400 }
+      )
+    }
+  }
+
   const listing = await prisma.listing.update({
     where: { id },
     data: {
       cropId,
+      farmId: farmId || null,
       quantity,
       unit,
       condition,
@@ -73,6 +88,7 @@ export async function PATCH(
       harvestDate: new Date(harvestDate),
       district,
       description: description || null,
+      images,
     },
   })
 

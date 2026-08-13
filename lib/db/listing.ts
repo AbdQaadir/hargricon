@@ -32,7 +32,15 @@ export async function getListingsForFarmer(farmerId: string) {
 export async function getListingForFarmer(id: string, farmerId: string) {
   return prisma.listing.findFirst({
     where: { id, farmerId },
+    include: { crop: true, farm: true },
+  })
+}
+
+export async function getListingsForFarm(farmId: string, farmerId: string) {
+  return prisma.listing.findMany({
+    where: { farmId, farmerId },
     include: { crop: true },
+    orderBy: { createdAt: "desc" },
   })
 }
 

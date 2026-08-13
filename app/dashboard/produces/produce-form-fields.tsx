@@ -1,9 +1,10 @@
-import type { Crop } from "@prisma/client"
+import type { Crop, Farm } from "@prisma/client"
 import { Controller, type Control, type FieldErrors } from "react-hook-form"
 
 import { CONDITION_LABELS, UNIT_LABELS } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
 import type { ListingFormValues } from "@/lib/validations/listing"
+import { ImageUploadField } from "@/components/image-upload-field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
@@ -13,13 +14,35 @@ function ProduceFormFields({
   control,
   errors,
   crops,
+  farms,
 }: {
   control: Control<ListingFormValues>
   errors: FieldErrors<ListingFormValues>
   crops: Crop[]
+  farms: Farm[]
 }) {
   return (
     <>
+      <Controller
+        control={control}
+        name="images"
+        render={({ field }) => (
+          <div className="flex flex-col gap-1.5">
+            <Label>Photos</Label>
+            <ImageUploadField
+              value={field.value}
+              onChange={field.onChange}
+              folder="hargricon/produce"
+            />
+            {errors.images && (
+              <p className="text-sm text-destructive">
+                {errors.images.message}
+              </p>
+            )}
+          </div>
+        )}
+      />
+
       <Controller
         control={control}
         name="cropId"
@@ -42,6 +65,31 @@ function ProduceFormFields({
           </div>
         )}
       />
+
+      {farms.length > 0 && (
+        <Controller
+          control={control}
+          name="farmId"
+          render={({ field }) => (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="farmId">Farm (optional)</Label>
+              <NativeSelect
+                id="farmId"
+                className="w-full"
+                {...field}
+                value={field.value ?? ""}
+              >
+                <NativeSelectOption value="">No farm</NativeSelectOption>
+                {farms.map((farm) => (
+                  <NativeSelectOption key={farm.id} value={farm.id}>
+                    {farm.name}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </div>
+          )}
+        />
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <Controller

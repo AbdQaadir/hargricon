@@ -4,6 +4,7 @@ export const ROUTES = {
   listing: (id: string) => `/listings/${id}`,
   dashboard: "/dashboard",
   dashboardFarms: "/dashboard/farms",
+  dashboardFarm: (id: string) => `/dashboard/farms/${id}`,
   dashboardProduces: "/dashboard/produces",
   dashboardProduce: (id: string) => `/dashboard/produces/${id}`,
   dashboardProfile: "/dashboard/profile",

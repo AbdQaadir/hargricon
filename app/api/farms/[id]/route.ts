@@ -4,7 +4,10 @@ import { auth } from "@/lib/auth/server"
 import { prisma } from "@/lib/db/client"
 import { farmSchema } from "@/lib/validations/farm"
 
-export async function POST(request: Request) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await auth.getSession()
   const user = session.data?.user
 
@@ -33,14 +36,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Profile not found." }, { status: 404 })
   }
 
+  const { id } = await params
+  const existing = await prisma.farm.findFirst({
+    where: { id, farmerId: profile.id },
+  })
+
+  if (!existing) {
+    return NextResponse.json({ error: "Farm not found." }, { status: 404 })
+  }
+
   const { name, district, sizeHectares, description, images } = parsed.data
 
-  const farm = await prisma.farm.create({
+  const farm = await prisma.farm.update({
+    where: { id },
     data: {
-      farmerId: profile.id,
       name,
       district,
-      sizeHectares,
+      sizeHectares: sizeHectares ?? null,
       description: description || null,
       images,
     },

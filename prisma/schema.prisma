@@ -95,8 +95,11 @@ model Farm {
   district     District
   sizeHectares Float?
   description  String?
+  images       String[] @default([])
   createdAt    DateTime @default(now()) @db.Timestamptz
   updatedAt    DateTime @updatedAt @db.Timestamptz
+
+  listings     Listing[]
 
   @@index([farmerId])
   @@index([district])
@@ -118,12 +121,15 @@ model Listing {
   id               String        @id @default(cuid())
   farmerId         String
   farmer           Profile       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  farmId           String?
+  farm             Farm?         @relation(fields: [farmId], references: [id], onDelete: SetNull)
   cropId           String
   crop             Crop          @relation(fields: [cropId], references: [id])
   quantity         Float
   unit             String
   condition        ListingCondition
   description      String?
+  images           String[]      @default([])
   askingPrice      Float
   recommendedPrice Float?
   harvestDate      DateTime      @db.Date
@@ -136,6 +142,7 @@ model Listing {
   priceRecommendations PriceRecommendation[]
 
   @@index([farmerId])
+  @@index([farmId])
   @@index([cropId])
   @@index([district, status])
 }
