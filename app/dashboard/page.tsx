@@ -4,6 +4,7 @@ import {
   MapPinIcon,
   PencilSimpleIcon,
   PlantIcon,
+  SparkleIcon,
 } from "@phosphor-icons/react/ssr"
 
 import { getFarms } from "@/lib/db/farm"
@@ -48,6 +49,30 @@ export default async function DashboardOverviewPage() {
           {districtLabel}
         </p>
       </div>
+
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <SparkleIcon className="mt-0.5 size-6 shrink-0 text-primary" />
+            <div>
+              <p className="font-medium">
+                AI-powered tools, built for your farm
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Get fair asking-price suggestions grounded in real e-Soko market
+                data when you list produce, and ask farming questions anytime.
+              </p>
+            </div>
+          </div>
+          <Link
+            href={ROUTES.dashboardLearning}
+            className={buttonVariants({ size: "sm", className: "shrink-0" })}
+          >
+            <SparkleIcon data-icon="inline-start" />
+            Ask AI a question
+          </Link>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>

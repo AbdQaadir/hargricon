@@ -1,6 +1,10 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeftIcon, MapPinIcon } from "@phosphor-icons/react/ssr"
+import {
+  ArrowLeftIcon,
+  MapPinIcon,
+  PencilSimpleIcon,
+} from "@phosphor-icons/react/ssr"
 
 import {
   CONDITION_LABELS,
@@ -8,16 +12,15 @@ import {
   STATUS_LABELS,
 } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
-import { getCrops } from "@/lib/db/crop"
-import { getFarms } from "@/lib/db/farm"
 import { getListingForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ImageGallery } from "@/components/image-gallery"
 import { AvailabilityToggle } from "./availability-toggle"
-import { EditProduceDialog } from "./edit-produce-dialog"
+import { PriceRecommendationPanel } from "./price-recommendation-panel"
 
 export const dynamic = "force-dynamic"
 
@@ -28,11 +31,7 @@ export default async function DashboardProducePage({
 }) {
   const profile = await requireProfile()
   const { id } = await params
-  const [listing, crops, farms] = await Promise.all([
-    getListingForFarmer(id, profile.id),
-    getCrops(),
-    getFarms(profile.id),
-  ])
+  const listing = await getListingForFarmer(id, profile.id)
 
   if (!listing) {
     notFound()
@@ -46,6 +45,10 @@ export default async function DashboardProducePage({
     month: "short",
     year: "numeric",
   })
+  const latestRecommendation = listing.priceRecommendations[0] ?? null
+  // A recommendation priced for a unit the farmer has since changed away
+  const recommendation =
+    latestRecommendation?.unit === listing.unit ? latestRecommendation : null
 
   return (
     <div className="flex flex-col gap-6">
@@ -80,9 +83,20 @@ export default async function DashboardProducePage({
 
         <div className="flex items-center gap-3">
           <AvailabilityToggle listingId={listing.id} status={listing.status} />
-          <EditProduceDialog listing={listing} crops={crops} farms={farms} />
+          <Link
+            href={ROUTES.dashboardEditProduce(listing.id)}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <PencilSimpleIcon data-icon="inline-start" />
+            Edit
+          </Link>
         </div>
       </div>
+
+      <PriceRecommendationPanel
+        listing={listing}
+        initialRecommendation={recommendation}
+      />
 
       <ImageGallery images={listing.images} alt={listing.crop.name} />
 

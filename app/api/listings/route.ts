@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     district,
     description,
     images,
+    priceRecommendationId,
   } = parsed.data
 
   const crop = await prisma.crop.findUnique({ where: { id: cropId } })
@@ -79,6 +80,13 @@ export async function POST(request: Request) {
       images,
     },
   })
+
+  if (priceRecommendationId) {
+    await prisma.priceRecommendation.updateMany({
+      where: { id: priceRecommendationId, listingId: null },
+      data: { listingId: listing.id },
+    })
+  }
 
   return NextResponse.json({ listing })
 }
