@@ -66,6 +66,22 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum MarketPriceType {
+  RETAIL
+  WHOLESALE
+  FARMGATE
+}
+
+enum LearningTopic {
+  STORAGE
+  PEST_MANAGEMENT
+  SOIL_HEALTH
+  PLANTING
+  HARVESTING
+  MARKET_TIMING
+  GENERAL
+}
+
 model Profile {
   id         String   @id @default(cuid())
   authUserId String   @unique
@@ -80,9 +96,10 @@ model Profile {
   createdAt  DateTime @default(now()) @db.Timestamptz
   updatedAt  DateTime @updatedAt @db.Timestamptz
 
-  listings   Listing[]
-  orders     Order[]   @relation("BuyerOrders")
-  farms      Farm[]
+  listings        Listing[]
+  orders          Order[]         @relation("BuyerOrders")
+  farms           Farm[]
+  learningEntries LearningEntry[]
 
   @@index([district])
 }
@@ -147,19 +164,36 @@ model Listing {
   @@index([district, status])
 }
 
+model Market {
+  id        String   @id @default(cuid())
+  esokoId   Int      @unique
+  name      String
+  district  District
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  marketPrices MarketPrice[]
+
+  @@index([district])
+}
+
 model MarketPrice {
-  id           String   @id @default(cuid())
+  id           String          @id @default(cuid())
   cropId       String
-  crop         Crop     @relation(fields: [cropId], references: [id])
-  district     District
+  crop         Crop            @relation(fields: [cropId], references: [id])
+  marketId     String
+  market       Market          @relation(fields: [marketId], references: [id])
+  priceType    MarketPriceType
   price        Float
   unit         String
   source       String
-  recordedDate DateTime @db.Date
-  createdAt    DateTime @default(now()) @db.Timestamptz
+  recordedDate DateTime        @db.Date
+  createdAt    DateTime        @default(now()) @db.Timestamptz
 
-  @@unique([cropId, district, source, recordedDate])
-  @@index([cropId, district, recordedDate])
+  @@unique([cropId, marketId, priceType, source, recordedDate])
+  @@index([cropId, marketId, recordedDate])
 }
 
 model PriceRecommendation {
@@ -169,11 +203,27 @@ model PriceRecommendation {
   listingId        String?
   listing          Listing? @relation(fields: [listingId], references: [id])
   district         District
+  unit             String   @default("KG")
   recommendedPrice Float
+  rationale        String
   modelVersion     String
   generatedAt      DateTime @default(now()) @db.Timestamptz
 
   @@index([cropId, district])
+}
+
+model LearningEntry {
+  id        String        @id @default(cuid())
+  farmerId  String
+  farmer    Profile       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+  question  String
+  summary   String
+  steps     String[]
+  topic     LearningTopic
+  liked     Boolean       @default(false)
+  createdAt DateTime      @default(now()) @db.Timestamptz
+
+  @@index([farmerId])
 }
 
 model Order {

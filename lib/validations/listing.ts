@@ -40,6 +40,7 @@ export const listingSchema = z.object({
     .array(z.string())
     .min(1, "Add at least one photo")
     .max(5, "Up to 5 photos"),
+  priceRecommendationId: z.string().optional(),
 })
 
 export type ListingValues = z.infer<typeof listingSchema>
