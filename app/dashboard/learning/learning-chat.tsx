@@ -2,13 +2,23 @@
 
 import { useState } from "react"
 import type { LearningEntry } from "@prisma/client"
-import { HeartIcon, PaperPlaneTiltIcon } from "@phosphor-icons/react"
+import {
+  CaretLeftIcon,
+  CaretRightIcon,
+  HeartIcon,
+  PaperPlaneTiltIcon,
+} from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { LEARNING_TOPIC_LABELS } from "@/constants/learning"
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
 import { API_ROUTES } from "@/lib/api-routes"
-import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,11 +31,14 @@ import {
 } from "@/components/ui/empty"
 import { Textarea } from "@/components/ui/textarea"
 
+const PAGE_SIZE = 10
+
 function LearningChat({ initialEntries }: { initialEntries: LearningEntry[] }) {
   const [entries, setEntries] = useState(initialEntries)
   const [question, setQuestion] = useState("")
   const [isAsking, setIsAsking] = useState(false)
   const [likedOnly, setLikedOnly] = useState(false)
+  const [page, setPage] = useState(1)
 
   async function ask() {
     const trimmed = question.trim()
@@ -41,6 +54,7 @@ function LearningChat({ initialEntries }: { initialEntries: LearningEntry[] }) {
       )
       setEntries((prev) => [data.entry, ...prev])
       setQuestion("")
+      setPage(1)
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Couldn't get an answer."))
     } finally {
@@ -66,6 +80,12 @@ function LearningChat({ initialEntries }: { initialEntries: LearningEntry[] }) {
   }
 
   const visibleEntries = likedOnly ? entries.filter((e) => e.liked) : entries
+  const totalPages = Math.max(1, Math.ceil(visibleEntries.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pageEntries = visibleEntries.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  )
 
   return (
     <div className="flex flex-col gap-6">
@@ -99,7 +119,10 @@ function LearningChat({ initialEntries }: { initialEntries: LearningEntry[] }) {
         <Button
           variant={likedOnly ? "default" : "outline"}
           size="sm"
-          onClick={() => setLikedOnly((prev) => !prev)}
+          onClick={() => {
+            setLikedOnly((prev) => !prev)
+            setPage(1)
+          }}
         >
           <HeartIcon
             data-icon="inline-start"
@@ -126,56 +149,101 @@ function LearningChat({ initialEntries }: { initialEntries: LearningEntry[] }) {
           </EmptyHeader>
         </Empty>
       ) : (
-        <div className="flex flex-col gap-4">
-          {visibleEntries.map((entry) => (
-            <Card key={entry.id}>
-              <CardContent className="flex flex-col gap-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex flex-col gap-1">
-                    <p className="font-medium">{entry.question}</p>
-                    <Badge variant="secondary" className="w-fit">
-                      {LEARNING_TOPIC_LABELS[entry.topic]}
-                    </Badge>
+        <>
+          <Accordion multiple>
+            {pageEntries.map((entry) => (
+              <AccordionItem key={entry.id} value={entry.id}>
+                <AccordionTrigger>
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium">{entry.question}</p>
+                      {entry.liked && (
+                        <HeartIcon
+                          weight="fill"
+                          className="size-3.5 shrink-0 text-destructive"
+                        />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">
+                        {LEARNING_TOPIC_LABELS[entry.topic]}
+                      </Badge>
+                      <span className="text-xs font-normal text-muted-foreground">
+                        {new Date(entry.createdAt).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </span>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => toggleLike(entry)}
-                    aria-label={entry.liked ? "Unlike" : "Like"}
-                    className={cn(
-                      "shrink-0 text-muted-foreground transition-colors hover:text-destructive",
-                      entry.liked && "text-destructive"
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm text-muted-foreground">
+                      {entry.summary}
+                    </p>
+
+                    {entry.steps.length > 0 && (
+                      <ol className="flex flex-col gap-1.5 text-sm">
+                        {entry.steps.map((step, index) => (
+                          <li key={index} className="flex gap-2">
+                            <span className="font-medium text-primary">
+                              {index + 1}.
+                            </span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ol>
                     )}
-                  >
-                    <HeartIcon weight={entry.liked ? "fill" : "regular"} />
-                  </button>
-                </div>
 
-                <p className="text-sm text-muted-foreground">{entry.summary}</p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-fit"
+                      onClick={() => toggleLike(entry)}
+                    >
+                      <HeartIcon
+                        data-icon="inline-start"
+                        weight={entry.liked ? "fill" : "regular"}
+                      />
+                      {entry.liked ? "Unlike" : "Like"}
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
 
-                {entry.steps.length > 0 && (
-                  <ol className="flex flex-col gap-1.5 text-sm">
-                    {entry.steps.map((step, index) => (
-                      <li key={index} className="flex gap-2">
-                        <span className="font-medium text-primary">
-                          {index + 1}.
-                        </span>
-                        <span>{step}</span>
-                      </li>
-                    ))}
-                  </ol>
-                )}
-
-                <p className="text-xs text-muted-foreground">
-                  {new Date(entry.createdAt).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={currentPage === 1}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                <CaretLeftIcon data-icon="inline-start" />
+                Previous
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={currentPage === totalPages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                Next
+                <CaretRightIcon data-icon="inline-end" />
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
