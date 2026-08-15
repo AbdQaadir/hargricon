@@ -1,32 +1,23 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import type { Crop, Farm, Listing } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PencilSimpleIcon } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
 import { API_ROUTES } from "@/lib/api-routes"
+import { ROUTES } from "@/lib/routes"
 import {
   listingFormSchema,
   type ListingFormValues,
 } from "@/lib/validations/listing"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ProduceFormFields } from "../produce-form-fields"
+import { Card, CardContent } from "@/components/ui/card"
+import { ProduceFormFields } from "../../produce-form-fields"
 
-function EditProduceDialog({
+function EditProduceForm({
   listing,
   crops,
   farms,
@@ -35,12 +26,12 @@ function EditProduceDialog({
   crops: Crop[]
   farms: Farm[]
 }) {
-  const [open, setOpen] = useState(false)
   const router = useRouter()
 
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ListingFormValues>({
     resolver: zodResolver(listingFormSchema),
@@ -66,7 +57,7 @@ function EditProduceDialog({
         askingPrice: Number(values.askingPrice),
       })
       toast.success("Produce updated.")
-      setOpen(false)
+      router.push(ROUTES.dashboardProduce(listing.id))
       router.refresh()
     } catch (error) {
       toast.error(getApiErrorMessage(error))
@@ -74,36 +65,35 @@ function EditProduceDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="outline" size="sm" />}>
-        <PencilSimpleIcon data-icon="inline-start" />
-        Edit
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit produce</DialogTitle>
-          <DialogDescription>
-            Changes apply immediately to your marketplace listing.
-          </DialogDescription>
-        </DialogHeader>
-
+    <Card className="max-w-2xl">
+      <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           <ProduceFormFields
             control={control}
             errors={errors}
             crops={crops}
             farms={farms}
+            setValue={setValue}
+            listingId={listing.id}
           />
 
-          <DialogFooter>
+          <div className="flex items-center justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(ROUTES.dashboardProduce(listing.id))}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Saving..." : "Save changes"}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </CardContent>
+    </Card>
   )
 }
 
-export { EditProduceDialog }
+export { EditProduceForm }

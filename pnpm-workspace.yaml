@@ -8,3 +8,5 @@ allowBuilds:
   '@prisma/engines': true
   prisma: true
   esbuild: true
+  '@google/genai': false
+  protobufjs: false

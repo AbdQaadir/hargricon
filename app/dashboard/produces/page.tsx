@@ -1,18 +1,17 @@
 import Link from "next/link"
-import { PlantIcon } from "@phosphor-icons/react/ssr"
+import { PlantIcon, PlusIcon } from "@phosphor-icons/react/ssr"
 
 import {
   CONDITION_LABELS,
   getUnitLabel,
   STATUS_LABELS,
 } from "@/constants/produce"
-import { getCrops } from "@/lib/db/crop"
-import { getFarms } from "@/lib/db/farm"
 import { getListingsForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { DISTRICTS } from "@/lib/districts"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
@@ -35,17 +34,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ProduceThumbnail } from "@/components/produce-thumbnail"
-import { AddProduceDialog } from "./add-produce-dialog"
 
 export const dynamic = "force-dynamic"
 
 export default async function ProducesPage() {
   const profile = await requireProfile()
-  const [listings, crops, farms] = await Promise.all([
-    getListingsForFarmer(profile.id),
-    getCrops(),
-    getFarms(profile.id),
-  ])
+  const listings = await getListingsForFarmer(profile.id)
 
   return (
     <div className="flex flex-col gap-6">
@@ -58,11 +52,10 @@ export default async function ProducesPage() {
             Manage the produce you&apos;ve listed for sale.
           </p>
         </div>
-        <AddProduceDialog
-          crops={crops}
-          farms={farms}
-          defaultDistrict={profile.district}
-        />
+        <Link href={ROUTES.dashboardNewProduce} className={buttonVariants()}>
+          <PlusIcon data-icon="inline-start" />
+          Add produce
+        </Link>
       </div>
 
       {listings.length === 0 ? (
