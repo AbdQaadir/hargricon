@@ -43,7 +43,7 @@ export default function SignInForm() {
   async function onSubmit(values: SignInValues) {
     try {
       await apiClient.post(API_ROUTES.signIn, values)
-      router.push(ROUTES.home)
+      router.push(ROUTES.dashboard)
       router.refresh()
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to sign in. Try again"))

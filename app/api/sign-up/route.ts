@@ -51,5 +51,9 @@ export async function POST(request: Request) {
     })
   }
 
+  // signUp.email establishes a session, but farmers should land on the sign-in
+  // page and sign in explicitly rather than being dropped straight into the app.
+  await auth.signOut()
+
   return NextResponse.json({ success: true })
 }
