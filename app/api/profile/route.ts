@@ -4,6 +4,28 @@ import { auth } from "@/lib/auth/server"
 import { prisma } from "@/lib/db/client"
 import { profileSchema } from "@/lib/validations/profile"
 
+export async function GET() {
+  const session = await auth.getSession()
+  const user = session.data?.user
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "You must be signed in." },
+      { status: 401 }
+    )
+  }
+
+  const profile = await prisma.profile.findUnique({
+    where: { authUserId: user.id },
+  })
+
+  if (!profile) {
+    return NextResponse.json({ error: "Profile not found." }, { status: 404 })
+  }
+
+  return NextResponse.json(profile)
+}
+
 export async function PATCH(request: Request) {
   const session = await auth.getSession()
   const user = session.data?.user
@@ -25,12 +47,19 @@ export async function PATCH(request: Request) {
     )
   }
 
-  const { phone, district, bio } = parsed.data
+  const { firstName, lastName, phone, whatsapp, district, bio } = parsed.data
 
-  await prisma.profile.update({
+  const updated = await prisma.profile.update({
     where: { authUserId: user.id },
-    data: { phone, district, bio: bio || null },
+    data: {
+      firstName,
+      lastName: lastName || null,
+      phone,
+      whatsapp: whatsapp || null,
+      district,
+      bio: bio || null,
+    },
   })
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, profile: updated })
 }

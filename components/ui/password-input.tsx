@@ -25,11 +25,21 @@ function PasswordInput({
       <InputGroupInput type={visible ? "text" : "password"} {...props} />
       <InputGroupAddon align="inline-end">
         <InputGroupButton
+          type="button"
           size="icon-xs"
           aria-label={visible ? "Hide password" : "Show password"}
-          onClick={() => setVisible((v) => !v)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setVisible((v) => !v)
+          }}
         >
-          {visible ? <EyeSlashIcon /> : <EyeIcon />}
+          {visible ? (
+            <EyeSlashIcon className="pointer-events-none size-4" />
+          ) : (
+            <EyeIcon className="pointer-events-none size-4" />
+          )}
         </InputGroupButton>
       </InputGroupAddon>
     </InputGroup>

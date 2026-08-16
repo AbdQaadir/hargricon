@@ -17,12 +17,7 @@ export async function POST(request: Request) {
 
   const { email, firstName, lastName, phone, district, password } = parsed.data
 
-  // Optionally restrict sign ups based on email address
-  // if (!email.endsWith("@my-company.com")) {
-  //  return NextResponse.json({ error: "Email must be from my-company.com" }, { status: 400 });
-  // }
-
-  const { error } = await auth.signUp.email({
+  const { data, error } = await auth.signUp.email({
     email,
     name: lastName ? `${firstName} ${lastName}` : firstName,
     password,
@@ -35,20 +30,30 @@ export async function POST(request: Request) {
     )
   }
 
-  const session = await auth.getSession()
-  const user = session.data?.user
+  const userId = data?.user?.id
 
-  if (user) {
-    await prisma.profile.create({
-      data: {
-        authUserId: user.id,
-        email: user.email,
-        firstName,
-        lastName: lastName || null,
-        phone,
-        district,
-      },
-    })
+  if (userId) {
+    try {
+      await prisma.profile.upsert({
+        where: { authUserId: userId },
+        update: {
+          firstName,
+          lastName: lastName || null,
+          phone,
+          district,
+        },
+        create: {
+          authUserId: userId,
+          email,
+          firstName,
+          lastName: lastName || null,
+          phone,
+          district,
+        },
+      })
+    } catch (dbError) {
+      console.error("Failed to create profile during signup:", dbError)
+    }
   }
 
   // signUp.email establishes a session, but farmers should land on the sign-in

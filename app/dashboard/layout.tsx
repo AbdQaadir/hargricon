@@ -13,9 +13,11 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <DashboardSidebar />
-      <SidebarInset>
+      <SidebarInset className="flex h-screen flex-col overflow-hidden">
         <DashboardHeader userName={profile.firstName} />
-        <div className="flex-1 p-4 sm:p-6">{children}</div>
+        <div className="flex flex-1 flex-col overflow-y-auto p-4 sm:p-6 lg:overflow-hidden">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )
