@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import {
   BarnIcon,
   GraduationCapIcon,
+  HandshakeIcon,
   PlantIcon,
   SquaresFourIcon,
   UserIcon,
@@ -28,6 +29,7 @@ const navItems = [
   { href: ROUTES.dashboard, label: "Overview", icon: SquaresFourIcon },
   { href: ROUTES.dashboardFarms, label: "Farms", icon: BarnIcon },
   { href: ROUTES.dashboardProduces, label: "Produces", icon: PlantIcon },
+  { href: ROUTES.dashboardBuyers, label: "Buyers", icon: HandshakeIcon },
   {
     href: ROUTES.dashboardLearning,
     label: "Learning",

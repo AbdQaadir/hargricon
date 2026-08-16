@@ -28,6 +28,12 @@ export type PriceRecommendationValues = z.infer<
   typeof priceRecommendationSchema
 >
 
+export const buyerMatchSchema = z.object({
+  listingId: z.string().min(1),
+})
+
+export type BuyerMatchValues = z.infer<typeof buyerMatchSchema>
+
 export const learningQuestionSchema = z.object({
   question: z
     .string()

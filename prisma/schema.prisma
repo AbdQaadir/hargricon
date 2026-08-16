@@ -241,3 +241,25 @@ model Order {
   @@index([listingId])
   @@index([buyerId])
 }
+
+enum BuyerCategory {
+  FARMERS_COOPERATIVE
+  WHOLESALERS
+  RETAILERS
+  SUPERMARKETS
+  BUYERS
+}
+
+// Outreach contact list (cooperatives, wholesalers, retailers, hotels, etc.)
+// sourced from partner data, not app users — nobody logs in as "Buyer".
+model Buyer {
+  id        String        @id @default(cuid())
+  name      String
+  category  BuyerCategory
+  email     String?
+  phone     String?
+  website   String?
+  createdAt DateTime      @default(now()) @db.Timestamptz
+
+  @@index([category])
+}
