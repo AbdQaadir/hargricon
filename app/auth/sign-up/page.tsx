@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EnvelopeIcon, MapPinIcon, PhoneIcon } from "@phosphor-icons/react"
@@ -14,7 +14,7 @@ import { signUpSchema, type SignUpValues } from "@/lib/validations/auth"
 import { AuthShell } from "../auth-shell"
 import { Input } from "@/components/ui/input"
 import { PasswordInput } from "@/components/ui/password-input"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   InputGroup,
@@ -49,7 +49,7 @@ function Optional() {
 }
 
 export default function SignUpForm() {
-  const [submitted, setSubmitted] = useState(false)
+  const router = useRouter()
   const {
     control,
     handleSubmit,
@@ -68,7 +68,8 @@ export default function SignUpForm() {
   async function onSubmit(values: SignUpValues) {
     try {
       await apiClient.post(API_ROUTES.signUp, values)
-      setSubmitted(true)
+      router.push(ROUTES.dashboard)
+      router.refresh()
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to create account"))
     }
@@ -84,190 +85,171 @@ export default function SignUpForm() {
           </CardDescription>
         </CardHeader>
 
-        {submitted ? (
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent>
-            <div className="flex flex-col items-center gap-4 text-center">
-              <div className="w-full rounded-md bg-primary/10 px-3 py-2 text-sm text-primary">
-                Your account has been created.
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-2 gap-3">
+                <Controller
+                  control={control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="firstName">
+                        First name <Required />
+                      </Label>
+                      <Input
+                        id="firstName"
+                        type="text"
+                        placeholder="John"
+                        {...field}
+                      />
+                      {errors.firstName && (
+                        <p className="text-sm text-destructive">
+                          {errors.firstName.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="lastName">
+                        Last name <Optional />
+                      </Label>
+                      <Input
+                        id="lastName"
+                        type="text"
+                        placeholder="Doe"
+                        {...field}
+                      />
+                    </div>
+                  )}
+                />
               </div>
-              <p className="text-sm text-muted-foreground">
-                Sign in to start listing your produce.
-              </p>
-              <Link
-                href={ROUTES.signIn}
-                className={buttonVariants({ className: "w-full" })}
-              >
-                Continue to sign in
-              </Link>
+
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="email">
+                      Email address <Required />
+                    </Label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <EnvelopeIcon />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="email"
+                        type="email"
+                        placeholder="john@my-company.com"
+                        {...field}
+                      />
+                    </InputGroup>
+                    {errors.email && (
+                      <p className="text-sm text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="password">
+                      Password <Required />
+                    </Label>
+                    <PasswordInput id="password" {...field} />
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="phone">
+                      Phone number <Required />
+                    </Label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <PhoneIcon />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="phone"
+                        type="tel"
+                        placeholder="+250 788 000 000"
+                        {...field}
+                      />
+                    </InputGroup>
+                    {errors.phone && (
+                      <p className="text-sm text-destructive">
+                        {errors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="district"
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="district">
+                      <MapPinIcon className="size-4 text-muted-foreground" />
+                      District <Required />
+                    </Label>
+                    <NativeSelect id="district" className="w-full" {...field}>
+                      <NativeSelectOption value="">
+                        Select your district
+                      </NativeSelectOption>
+                      {DISTRICTS.map(({ value, label }) => (
+                        <NativeSelectOption key={value} value={value}>
+                          {label}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    {errors.district && (
+                      <p className="text-sm text-destructive">
+                        {errors.district.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
             </div>
           </CardContent>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <CardContent>
-              <div className="flex flex-col gap-5">
-                <div className="grid grid-cols-2 gap-3">
-                  <Controller
-                    control={control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="firstName">
-                          First name <Required />
-                        </Label>
-                        <Input
-                          id="firstName"
-                          type="text"
-                          placeholder="John"
-                          {...field}
-                        />
-                        {errors.firstName && (
-                          <p className="text-sm text-destructive">
-                            {errors.firstName.message}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  />
 
-                  <Controller
-                    control={control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <div className="flex flex-col gap-1.5">
-                        <Label htmlFor="lastName">
-                          Last name <Optional />
-                        </Label>
-                        <Input
-                          id="lastName"
-                          type="text"
-                          placeholder="Doe"
-                          {...field}
-                        />
-                      </div>
-                    )}
-                  />
-                </div>
-
-                <Controller
-                  control={control}
-                  name="email"
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="email">
-                        Email address <Required />
-                      </Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <EnvelopeIcon />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="email"
-                          type="email"
-                          placeholder="john@my-company.com"
-                          {...field}
-                        />
-                      </InputGroup>
-                      {errors.email && (
-                        <p className="text-sm text-destructive">
-                          {errors.email.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="password"
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="password">
-                        Password <Required />
-                      </Label>
-                      <PasswordInput id="password" {...field} />
-                      {errors.password && (
-                        <p className="text-sm text-destructive">
-                          {errors.password.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="phone"
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="phone">
-                        Phone number <Required />
-                      </Label>
-                      <InputGroup>
-                        <InputGroupAddon>
-                          <PhoneIcon />
-                        </InputGroupAddon>
-                        <InputGroupInput
-                          id="phone"
-                          type="tel"
-                          placeholder="+250 788 000 000"
-                          {...field}
-                        />
-                      </InputGroup>
-                      {errors.phone && (
-                        <p className="text-sm text-destructive">
-                          {errors.phone.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
-
-                <Controller
-                  control={control}
-                  name="district"
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-1.5">
-                      <Label htmlFor="district">
-                        <MapPinIcon className="size-4 text-muted-foreground" />
-                        District <Required />
-                      </Label>
-                      <NativeSelect id="district" className="w-full" {...field}>
-                        <NativeSelectOption value="">
-                          Select your district
-                        </NativeSelectOption>
-                        {DISTRICTS.map(({ value, label }) => (
-                          <NativeSelectOption key={value} value={value}>
-                            {label}
-                          </NativeSelectOption>
-                        ))}
-                      </NativeSelect>
-                      {errors.district && (
-                        <p className="text-sm text-destructive">
-                          {errors.district.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                />
-              </div>
-            </CardContent>
-
-            <CardFooter className="flex-col gap-3">
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? "Creating account..." : "Create account"}
-              </Button>
-              <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{" "}
-                <Link
-                  href={ROUTES.signIn}
-                  className="text-foreground underline underline-offset-4"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        )}
+          <CardFooter className="flex-col gap-3">
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Creating account..." : "Create account"}
+            </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                href={ROUTES.signIn}
+                className="text-foreground underline underline-offset-4"
+              >
+                Sign in
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
       </Card>
     </AuthShell>
   )
