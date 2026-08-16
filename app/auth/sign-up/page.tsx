@@ -68,8 +68,8 @@ export default function SignUpForm() {
   async function onSubmit(values: SignUpValues) {
     try {
       await apiClient.post(API_ROUTES.signUp, values)
-      router.push(ROUTES.dashboard)
-      router.refresh()
+      toast.success("Account created. Sign in to continue.")
+      router.push(ROUTES.signIn)
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to create account"))
     }
