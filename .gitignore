@@ -35,6 +35,9 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# pnpm local store
+.pnpm-store/
+
 # ai agent tooling (not part of the application)
 .claude/
 .agents/
