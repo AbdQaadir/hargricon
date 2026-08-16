@@ -10,6 +10,7 @@ export const API_ROUTES = {
   listing: (id: string) => `/api/listings/${id}`,
   listingStatus: (id: string) => `/api/listings/${id}/status`,
   priceRecommendation: "/api/ai/price-recommendation",
+  buyerMatches: "/api/ai/buyer-matches",
   learningEntries: "/api/ai/learning",
   learningEntry: (id: string) => `/api/ai/learning/${id}`,
 } as const

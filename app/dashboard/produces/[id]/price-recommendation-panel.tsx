@@ -9,11 +9,9 @@ import { toast } from "sonner"
 import { getUnitLabel } from "@/constants/produce"
 import { apiClient, getApiErrorMessage } from "@/lib/api-client"
 import { API_ROUTES } from "@/lib/api-routes"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 
-type Recommendation = {
+export type Recommendation = {
   id: string
   recommendedPrice: number
   rationale: string
@@ -80,79 +78,66 @@ function PriceRecommendationPanel({
   }
 
   return (
-    <Card className="border-primary/30 bg-primary/5">
-      <CardContent className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <SparkleIcon className="size-5 text-primary" />
-          <p className="font-medium">AI Price Assistant</p>
-          <Badge
-            variant="outline"
-            className="border-primary/30 bg-primary/10 text-primary"
-          >
-            Powered by Gemini
-          </Badge>
-        </div>
-
-        {recommendation ? (
-          <>
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-              <span>
-                Suggested:{" "}
-                <span className="font-medium">
-                  {recommendation.recommendedPrice.toLocaleString()} RWF/
-                  {getUnitLabel(recommendation.unit)}
-                </span>
+    <div className="flex flex-col gap-3">
+      {recommendation ? (
+        <>
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+            <span>
+              Suggested:{" "}
+              <span className="font-medium">
+                {recommendation.recommendedPrice.toLocaleString()} RWF/
+                {getUnitLabel(recommendation.unit)}
               </span>
-              <span className="text-muted-foreground">
-                You&apos;re asking {listing.askingPrice.toLocaleString()} RWF/
-                {getUnitLabel(listing.unit)}
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {recommendation.rationale}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                size="sm"
-                disabled={isApplying}
-                onClick={applyPrice}
-              >
-                {isApplying ? "Updating..." : "Apply this price"}
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                disabled={isSuggesting}
-                onClick={getSuggestion}
-              >
-                <SparkleIcon data-icon="inline-start" />
-                {isSuggesting ? "Thinking..." : "Refresh suggestion"}
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <p className="text-sm text-muted-foreground">
-              Not sure your price is competitive? Get a fair asking price
-              grounded in recent e-Soko market data for this crop and district,
-              priced per {getUnitLabel(listing.unit)}.
-            </p>
+            </span>
+            <span className="text-muted-foreground">
+              You&apos;re asking {listing.askingPrice.toLocaleString()} RWF/
+              {getUnitLabel(listing.unit)}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {recommendation.rationale}
+          </p>
+          <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               size="sm"
-              className="w-fit"
+              disabled={isApplying}
+              onClick={applyPrice}
+            >
+              {isApplying ? "Updating..." : "Apply this price"}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
               disabled={isSuggesting}
               onClick={getSuggestion}
             >
               <SparkleIcon data-icon="inline-start" />
-              {isSuggesting ? "Thinking..." : "Get AI suggestion"}
+              {isSuggesting ? "Thinking..." : "Refresh suggestion"}
             </Button>
-          </>
-        )}
-      </CardContent>
-    </Card>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-sm text-muted-foreground">
+            Not sure your price is competitive? Get a fair asking price grounded
+            in recent e-Soko market data for this crop and district, priced per{" "}
+            {getUnitLabel(listing.unit)}.
+          </p>
+          <Button
+            type="button"
+            size="sm"
+            className="w-fit"
+            disabled={isSuggesting}
+            onClick={getSuggestion}
+          >
+            <SparkleIcon data-icon="inline-start" />
+            {isSuggesting ? "Thinking..." : "Get AI suggestion"}
+          </Button>
+        </>
+      )}
+    </div>
   )
 }
 

@@ -6,21 +6,15 @@ import {
   PencilSimpleIcon,
 } from "@phosphor-icons/react/ssr"
 
-import {
-  CONDITION_LABELS,
-  getUnitLabel,
-  STATUS_LABELS,
-} from "@/constants/produce"
+import { CONDITION_LABELS, STATUS_LABELS } from "@/constants/produce"
 import { DISTRICTS } from "@/lib/districts"
 import { getListingForFarmer } from "@/lib/db/listing"
 import { requireProfile } from "@/lib/db/profile"
 import { ROUTES } from "@/lib/routes"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ImageGallery } from "@/components/image-gallery"
 import { AvailabilityToggle } from "./availability-toggle"
-import { PriceRecommendationPanel } from "./price-recommendation-panel"
+import { ProduceTabs } from "./produce-tabs"
 
 export const dynamic = "force-dynamic"
 
@@ -93,51 +87,11 @@ export default async function DashboardProducePage({
         </div>
       </div>
 
-      <PriceRecommendationPanel
+      <ProduceTabs
         listing={listing}
         initialRecommendation={recommendation}
+        harvestDateLabel={harvestDateLabel}
       />
-
-      <ImageGallery images={listing.images} alt={listing.crop.name} />
-
-      <Card>
-        <CardContent className="flex flex-col gap-5">
-          {listing.description && (
-            <p className="text-muted-foreground">{listing.description}</p>
-          )}
-          <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
-            <div>
-              <dt className="text-muted-foreground">Available</dt>
-              <dd className="font-medium">
-                {listing.quantity.toLocaleString()} {getUnitLabel(listing.unit)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Price</dt>
-              <dd className="font-medium">
-                {listing.askingPrice.toLocaleString()} RWF /{" "}
-                {getUnitLabel(listing.unit)}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Harvested</dt>
-              <dd className="font-medium">{harvestDateLabel}</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Condition</dt>
-              <dd className="font-medium">
-                {CONDITION_LABELS[listing.condition]}
-              </dd>
-            </div>
-            {listing.farm && (
-              <div>
-                <dt className="text-muted-foreground">Farm</dt>
-                <dd className="font-medium">{listing.farm.name}</dd>
-              </div>
-            )}
-          </dl>
-        </CardContent>
-      </Card>
     </div>
   )
 }
