@@ -27,18 +27,18 @@ function SiteHeader() {
         <Logo />
 
         <nav className="hidden items-center gap-6 md:flex">
-          <a
-            href="#how-it-works"
+          <Link
+            href="/#how-it-works"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             How it works
-          </a>
-          <a
-            href="#features"
+          </Link>
+          <Link
+            href="/#features"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Features
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
