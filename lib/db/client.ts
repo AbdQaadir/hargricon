@@ -3,7 +3,9 @@ import { PrismaClient } from "@prisma/client"
 import { PrismaNeon } from "@prisma/adapter-neon"
 import ws from "ws"
 
-neonConfig.webSocketConstructor = ws
+if (typeof globalThis.WebSocket === "undefined") {
+  neonConfig.webSocketConstructor = ws
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined

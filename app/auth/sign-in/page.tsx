@@ -7,8 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { EnvelopeIcon } from "@phosphor-icons/react"
 import { toast } from "sonner"
 
-import { apiClient, getApiErrorMessage } from "@/lib/api-client"
-import { API_ROUTES } from "@/lib/api-routes"
+import { authClient } from "@/lib/auth/client"
 import { ROUTES } from "@/lib/routes"
 import { signInSchema, type SignInValues } from "@/lib/validations/auth"
 import { AuthShell } from "../auth-shell"
@@ -42,11 +41,23 @@ export default function SignInForm() {
 
   async function onSubmit(values: SignInValues) {
     try {
-      await apiClient.post(API_ROUTES.signIn, values)
+      const { error } = await authClient.signIn.email({
+        email: values.email,
+        password: values.password,
+      })
+
+      if (error) {
+        toast.error(
+          error.message || "Failed to sign in. Please check your credentials."
+        )
+        return
+      }
+
+      toast.success("Signed in successfully!")
       router.push(ROUTES.dashboard)
       router.refresh()
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, "Failed to sign in. Try again"))
+    } catch {
+      toast.error("Failed to sign in. Try again.")
     }
   }
 
