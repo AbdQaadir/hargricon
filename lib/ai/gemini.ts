@@ -37,3 +37,30 @@ export async function generateStructured<T>({
 
   return JSON.parse(interaction.output_text) as T
 }
+
+export async function* generateStructuredStream({
+  prompt,
+  schema,
+}: {
+  prompt: string
+  schema: Record<string, unknown>
+}): AsyncGenerator<string, void, unknown> {
+  const stream = await gemini.interactions.create({
+    model: GEMINI_MODEL,
+    input: prompt,
+    response_format: {
+      type: "text",
+      mime_type: "application/json",
+      schema,
+    },
+    stream: true,
+  })
+
+  for await (const event of stream) {
+    if (event.event_type === "step.delta" && event.delta.type === "text") {
+      yield event.delta.text
+    } else if (event.event_type === "error") {
+      throw new Error(event.error?.message ?? "Gemini stream error.")
+    }
+  }
+}
