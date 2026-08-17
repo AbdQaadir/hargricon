@@ -99,7 +99,7 @@ model Profile {
   listings        Listing[]
   orders          Order[]         @relation("BuyerOrders")
   farms           Farm[]
-  learningEntries LearningEntry[]
+  learningThreads LearningThread[]
 
   @@index([district])
 }
@@ -212,18 +212,36 @@ model PriceRecommendation {
   @@index([cropId, district])
 }
 
-model LearningEntry {
+enum LearningRole {
+  USER
+  ASSISTANT
+}
+
+model LearningThread {
   id        String        @id @default(cuid())
   farmerId  String
   farmer    Profile       @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-  question  String
-  summary   String
-  steps     String[]
-  topic     LearningTopic
-  liked     Boolean       @default(false)
+  title     String
+  topic     LearningTopic @default(GENERAL)
   createdAt DateTime      @default(now()) @db.Timestamptz
+  updatedAt DateTime      @updatedAt @db.Timestamptz
+
+  messages  LearningMessage[]
 
   @@index([farmerId])
+}
+
+model LearningMessage {
+  id        String         @id @default(cuid())
+  threadId  String
+  thread    LearningThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  role      LearningRole
+  content   String
+  steps     String[]       @default([])
+  liked     Boolean        @default(false)
+  createdAt DateTime       @default(now()) @db.Timestamptz
+
+  @@index([threadId])
 }
 
 model Order {

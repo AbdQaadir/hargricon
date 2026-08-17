@@ -20,6 +20,8 @@ function getPageTitle(pathname: string) {
   if (pathname === ROUTES.dashboard) return "Overview"
   if (pathname.startsWith(ROUTES.dashboardFarms)) return "Farms"
   if (pathname.startsWith(ROUTES.dashboardProduces)) return "Produces"
+  if (pathname.startsWith(ROUTES.dashboardBuyers)) return "Buyers"
+  if (pathname.startsWith(ROUTES.dashboardLearning)) return "Learning"
   if (pathname.startsWith(ROUTES.dashboardProfile)) return "Profile"
   return "Dashboard"
 }

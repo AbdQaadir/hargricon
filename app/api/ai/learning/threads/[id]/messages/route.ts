@@ -1,0 +1,82 @@
+import { NextResponse } from "next/server"
+
+import { auth } from "@/lib/auth/server"
+import { prisma } from "@/lib/db/client"
+import { streamLearningReply } from "@/lib/ai/learning"
+import { learningQuestionSchema } from "@/lib/validations/ai"
+
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.getSession()
+  const user = session.data?.user
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "You must be signed in." },
+      { status: 401 }
+    )
+  }
+
+  const body = await request.json()
+  const parsed = learningQuestionSchema.safeParse(body)
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid input." },
+      { status: 400 }
+    )
+  }
+
+  const profile = await prisma.profile.findUnique({
+    where: { authUserId: user.id },
+  })
+
+  if (!profile) {
+    return NextResponse.json({ error: "Profile not found." }, { status: 404 })
+  }
+
+  const { id } = await params
+  const thread = await prisma.learningThread.findFirst({
+    where: { id, farmerId: profile.id },
+  })
+
+  if (!thread) {
+    return NextResponse.json(
+      { error: "Conversation not found." },
+      { status: 404 }
+    )
+  }
+
+  const encoder = new TextEncoder()
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      try {
+        for await (const chunk of streamLearningReply({
+          threadId: id,
+          farmerId: profile.id,
+          question: parsed.data.question,
+        })) {
+          controller.enqueue(encoder.encode(`${JSON.stringify(chunk)}\n`))
+        }
+      } catch (error) {
+        console.error(error)
+        controller.enqueue(
+          encoder.encode(
+            `${JSON.stringify({
+              type: "error",
+              message: "Couldn't get an answer right now. Try again.",
+            })}\n`
+          )
+        )
+      } finally {
+        controller.close()
+      }
+    },
+  })
+
+  return new Response(stream, {
+    headers: { "Content-Type": "application/x-ndjson; charset=utf-8" },
+  })
+}

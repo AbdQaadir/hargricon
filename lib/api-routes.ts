@@ -11,6 +11,8 @@ export const API_ROUTES = {
   listingStatus: (id: string) => `/api/listings/${id}/status`,
   priceRecommendation: "/api/ai/price-recommendation",
   buyerMatches: "/api/ai/buyer-matches",
-  learningEntries: "/api/ai/learning",
-  learningEntry: (id: string) => `/api/ai/learning/${id}`,
+  learningThreads: "/api/ai/learning/threads",
+  learningThreadMessages: (id: string) =>
+    `/api/ai/learning/threads/${id}/messages`,
+  learningMessage: (id: string) => `/api/ai/learning/messages/${id}`,
 } as const

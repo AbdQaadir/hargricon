@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server"
+import { z } from "zod"
 
 import { auth } from "@/lib/auth/server"
 import { prisma } from "@/lib/db/client"
-import { askLearningQuestion } from "@/lib/ai/learning"
-import { learningQuestionSchema } from "@/lib/validations/ai"
 
-export async function POST(request: Request) {
+const patchSchema = z.object({
+  liked: z.boolean(),
+})
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await auth.getSession()
   const user = session.data?.user
 
@@ -17,7 +23,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json()
-  const parsed = learningQuestionSchema.safeParse(body)
+  const parsed = patchSchema.safeParse(body)
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -34,17 +40,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Profile not found." }, { status: 404 })
   }
 
-  try {
-    const entry = await askLearningQuestion({
-      farmerId: profile.id,
-      question: parsed.data.question,
-    })
-    return NextResponse.json({ entry })
-  } catch (error) {
-    console.error(error)
-    return NextResponse.json(
-      { error: "Couldn't get an answer right now. Try again." },
-      { status: 502 }
-    )
+  const { id } = await params
+  const existing = await prisma.learningMessage.findFirst({
+    where: { id, thread: { farmerId: profile.id } },
+  })
+
+  if (!existing) {
+    return NextResponse.json({ error: "Message not found." }, { status: 404 })
   }
+
+  const message = await prisma.learningMessage.update({
+    where: { id },
+    data: { liked: parsed.data.liked },
+  })
+
+  return NextResponse.json({ message })
 }

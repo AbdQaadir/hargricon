@@ -10,6 +10,7 @@ export const ROUTES = {
   dashboardProduce: (id: string) => `/dashboard/produces/${id}`,
   dashboardEditProduce: (id: string) => `/dashboard/produces/${id}/edit`,
   dashboardLearning: "/dashboard/learning",
+  dashboardLearningThread: (id: string) => `/dashboard/learning/${id}`,
   dashboardBuyers: "/dashboard/buyers",
   dashboardProfile: "/dashboard/profile",
   signIn: "/auth/sign-in",
